@@ -3,7 +3,10 @@
  *   /                     门户首页（分类入口 + 文章列表）
  *   /category/:id         分类页
  *   /study/:id?           示例集学习页（:id 可选，用于直达某个示例）
- *   /api-demo             接口示例页（调 studydemo-backend 的 /api/hello）
+ *   /backend-demo         接口示例页（调 studydemo-backend 的 /api/hello）
+ *
+ * 接口示例页刻意不叫 /api-demo：/api 是代理给后端的路径前缀，
+ * 前端路由用同一个前缀，HMR 直连和 Nginx 转发都会被误伤。
  */
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 

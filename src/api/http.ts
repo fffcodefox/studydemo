@@ -13,10 +13,11 @@
 import type { ApiResult } from './types'
 
 /**
- * 接口前缀。
- * 开发环境走 Vite 代理（见 vite.config.ts 的 server.proxy）；
- * 如果以后要直连后端，在 .env.development 里写 VITE_API_BASE=http://localhost:8080/api 即可，
- * 不用改任何页面代码。
+ * 接口前缀，来自 .env.development / .env.production 的 VITE_API_BASE。
+ *
+ * 开发环境是 /api，由 vite.config.ts 的 server.proxy 转发到后端（目标地址见 DEV_PROXY_TARGET）；
+ * 生产环境同样是 /api，由 Nginx 反向代理到后端 —— 前端代码两种环境一字不用改。
+ * 若确实要直连后端（跨域），把 VITE_API_BASE 改成完整地址即可。
  */
 export const API_BASE: string = import.meta.env.VITE_API_BASE ?? '/api'
 

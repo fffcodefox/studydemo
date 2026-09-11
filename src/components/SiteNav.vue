@@ -49,7 +49,7 @@ const keyword = ref('')
 // 当前所在的分类（/category/:id），用于高亮
 const current = computed(() => String(route.params.id ?? ''))
 const isHome = computed(() => route.path === '/')
-const isApiDemo = computed(() => route.path === '/api-demo')
+const isApiDemo = computed(() => route.path === '/backend-demo')
 
 const doSearch = () => {
   const kw = keyword.value.trim()
