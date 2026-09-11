@@ -1,21 +1,24 @@
 /**
  * 路由表
- *   /                     门户首页（分类入口 + 文章列表）
- *   /category/:id         分类页
+ *   /                     门户首页（练习方向 + 最近记录）
+ *   /category/:id         方向页
  *   /study/:id?           示例集学习页（:id 可选，用于直达某个示例）
  *   /backend-demo         接口示例页（调 studydemo-backend 的 /api/hello）
+ *   /api-demo             ← 旧地址，保留跳转以免旧链接失效
  *
  * 接口示例页刻意不叫 /api-demo：/api 是代理给后端的路径前缀，
  * 前端路由用同一个前缀，HMR 直连和 Nginx 转发都会被误伤。
  */
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
+const SITE_NAME = '学习练兵场'
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',
     component: () => import('../views/HomeView.vue'),
-    meta: { title: '学习笔记' },
+    meta: { title: SITE_NAME },
   },
   {
     path: '/category/:id',
@@ -29,12 +32,14 @@ const routes: RouteRecordRaw[] = [
     meta: { title: '基础 vue-study-demo' },
   },
   {
-    path: '/api-demo',
-    name: 'api-demo',
+    path: '/backend-demo',
+    name: 'backend-demo',
     component: () => import('../views/ApiDemoView.vue'),
     meta: { title: '接口示例' },
   },
-  // 兜底：未知地址回首页
+  // 旧地址兜底，避免收藏/外链失效
+  { path: '/api-demo', redirect: '/backend-demo' },
+  // 未知地址回首页
   { path: '/:pathMatch(.*)*', redirect: '/' },
 ]
 
@@ -51,8 +56,8 @@ export const router = createRouter({
 
 // 简单改一下标签页标题
 router.afterEach((to) => {
-  const title = (to.meta.title as string | undefined) ?? '学习笔记'
-  document.title = to.name === 'home' ? '学习笔记 · 把学到的东西写成能跑起来的例子' : `${title} · 学习笔记`
+  const title = (to.meta.title as string | undefined) ?? SITE_NAME
+  document.title = to.name === 'home' ? `${SITE_NAME} · 把想学的都塞进同一个项目` : `${title} · ${SITE_NAME}`
 })
 
 export default router

@@ -28,6 +28,11 @@ coverage
 
 .eslintcache
 
+# 排查问题时临时落盘的日志（_build.txt / _check.txt 之类），别提交
+_*.txt
+_*.log
+_*.err
+
 # Cypress
 /cypress/videos/
 /cypress/screenshots/

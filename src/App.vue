@@ -20,31 +20,36 @@
         <div class="footer-brand">
           <span class="logo">学</span>
           <p>
-            学习笔记 · Study Notes<br/>
-            <small>记录能跑起来的例子，而不只是结论</small>
+            学习练兵场 · Study Lab<br/>
+            <small>一个会一直长大的练手项目：前端 / 后端 / 大数据 / 模型 / 复杂业务</small>
           </p>
         </div>
         <div class="footer-links">
           <div>
-            <b>分类</b>
-            <RouterLink v-for="c in categories" :key="c.id" :to="`/category/${c.id}`">
-              {{ c.name }}
+            <b>练习方向</b>
+            <RouterLink
+              v-for="t in tracks"
+              :key="t.id"
+              :to="t.to ?? `/category/${t.id}`"
+            >
+              {{ t.name }}
             </RouterLink>
           </div>
           <div>
             <b>开始</b>
             <RouterLink to="/study">基础 vue-study-demo</RouterLink>
-            <RouterLink to="/category/frontend">前端学习</RouterLink>
+            <RouterLink to="/backend-demo">接口示例</RouterLink>
           </div>
           <div>
             <b>技术栈</b>
             <span>Vue 3.5</span>
             <span>TypeScript</span>
             <span>Vite</span>
+            <span>Spring Boot 2.7</span>
           </div>
         </div>
       </div>
-      <p class="copyright">© 2026 Study Notes · 用 Vue 3 写的练手项目</p>
+      <p class="copyright">© 2026 Study Lab · 用 Vue 3 写的练手项目</p>
     </footer>
   </div>
 </template>
@@ -52,7 +57,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import SiteNav from './components/SiteNav.vue'
-import { categories } from './data/posts'
+import { tracks } from './data/posts'
 </script>
 
 <style scoped>

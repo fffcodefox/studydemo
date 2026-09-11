@@ -1,2 +1,0 @@
-﻿    + FullyQualifiedErrorId : NativeCommandError
-[32m鉁?built in 2.30s[39m

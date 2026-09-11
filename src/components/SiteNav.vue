@@ -1,8 +1,12 @@
 <!--
   全站顶部导航
+  ------------------------------------------------------------------
   - 左侧：站点标识（书页感的方块 logo + 衬线标题）
-  - 中间：分类导航（对应 data/posts.ts 里的 categories）
+  - 中间：首页 + 五个练习方向，直接由 data/posts.ts 的 tracks 生成
+          —— 以后加一个方向，导航自动多一项，不用改这里
   - 右侧：搜索框 + 「开始学习」直达示例集
+  高亮规则：分类页看路由参数，有独立落地页的方向（/study、/backend-demo）看路径前缀
+  ------------------------------------------------------------------
 -->
 <template>
   <header class="nav">
@@ -10,27 +14,28 @@
       <RouterLink to="/" class="brand">
         <span class="logo">学</span>
         <span class="brand-text">
-          <b>学习笔记</b>
-          <i>Study Notes</i>
+          <b>学习练兵场</b>
+          <i>Study Lab</i>
         </span>
       </RouterLink>
 
       <nav class="links">
         <RouterLink to="/" class="link" :class="{ on: isHome }">首页</RouterLink>
-        <RouterLink to="/api-demo" class="link" :class="{ on: isApiDemo }">接口示例</RouterLink>
         <RouterLink
-          v-for="c in categories"
-          :key="c.id"
-          :to="`/category/${c.id}`"
+          v-for="t in tracks"
+          :key="t.id"
+          :to="t.to ?? `/category/${t.id}`"
           class="link"
-          :class="{ on: current === c.id }"
+          :class="{ on: activeTrackId === t.id }"
         >
-          {{ c.name }}
+          {{ t.name }}
+          <!-- 还没点亮的方向给个小圆点提示，避免点进去发现是空的太意外 -->
+          <i v-if="t.status === 'planned'" class="dot-planned" :title="'还没开始'"></i>
         </RouterLink>
       </nav>
 
       <div class="tools">
-        <input v-model="keyword" class="search" placeholder="搜索文章 / 示例…" @keyup.enter="doSearch"/>
+        <input v-model="keyword" class="search" placeholder="搜索示例…" @keyup.enter="doSearch"/>
         <RouterLink to="/study" class="cta">开始学习 →</RouterLink>
       </div>
     </div>
@@ -40,16 +45,25 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { categories } from '../data/posts'
+import { tracks } from '../data/posts'
 
 const route = useRoute()
 const router = useRouter()
 const keyword = ref('')
 
-// 当前所在的分类（/category/:id），用于高亮
-const current = computed(() => String(route.params.id ?? ''))
 const isHome = computed(() => route.path === '/')
-const isApiDemo = computed(() => route.path === '/backend-demo')
+
+/**
+ * 当前应该高亮哪个方向：
+ * 1) /category/:id   —— 分类页直接用参数
+ * 2) 有独立落地页的方向（frontend -> /study、backend -> /backend-demo）看路径前缀
+ */
+const activeTrackId = computed(() => {
+  const paramId = String(route.params.id ?? '')
+  if (paramId) return paramId
+  const hit = tracks.find((t) => t.to && route.path.startsWith(t.to))
+  return hit?.id ?? ''
+})
 
 const doSearch = () => {
   const kw = keyword.value.trim()
@@ -165,6 +179,17 @@ const doSearch = () => {
   border-radius: 50%;
   background: var(--brand);
 }
+/* 未点亮方向右上角的空心小点 */
+.dot-planned {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  border: 1px solid var(--text-weak);
+  opacity: 0.75;
+}
 
 /* ---------- 右侧工具 ---------- */
 .tools {
@@ -174,7 +199,7 @@ const doSearch = () => {
   flex: none;
 }
 .search {
-  width: 170px;
+  width: 160px;
   border-radius: 999px;
   padding-left: 12px;
   background: #fffdf6;
