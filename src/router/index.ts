@@ -3,6 +3,7 @@
  *   /                     门户首页（分类入口 + 文章列表）
  *   /category/:id         分类页
  *   /study/:id?           示例集学习页（:id 可选，用于直达某个示例）
+ *   /api-demo             接口示例页（调 studydemo-backend 的 /api/hello）
  */
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
@@ -23,6 +24,12 @@ const routes: RouteRecordRaw[] = [
     name: 'study',
     component: () => import('../views/StudyView.vue'),
     meta: { title: '基础 vue-study-demo' },
+  },
+  {
+    path: '/api-demo',
+    name: 'api-demo',
+    component: () => import('../views/ApiDemoView.vue'),
+    meta: { title: '接口示例' },
   },
   // 兜底：未知地址回首页
   { path: '/:pathMatch(.*)*', redirect: '/' },

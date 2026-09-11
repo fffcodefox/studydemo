@@ -17,6 +17,7 @@
 
       <nav class="links">
         <RouterLink to="/" class="link" :class="{ on: isHome }">首页</RouterLink>
+        <RouterLink to="/api-demo" class="link" :class="{ on: isApiDemo }">接口示例</RouterLink>
         <RouterLink
           v-for="c in categories"
           :key="c.id"
@@ -48,6 +49,7 @@ const keyword = ref('')
 // 当前所在的分类（/category/:id），用于高亮
 const current = computed(() => String(route.params.id ?? ''))
 const isHome = computed(() => route.path === '/')
+const isApiDemo = computed(() => route.path === '/api-demo')
 
 const doSearch = () => {
   const kw = keyword.value.trim()
