@@ -143,12 +143,12 @@ const trimText = ref('')
   color: #555;
 }
 .val {
-  color: #7c9691;
+  color: var(--text-sub);
   font-size: 12px;
 }
 .json {
-  background: #f7fbfa;
-  border: 1px solid #e6efec;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
   padding: 8px;
   border-radius: 4px;
   font-size: 12px;

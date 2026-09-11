@@ -19,7 +19,10 @@ const server = await createServer({
   logLevel: 'error',
 })
 
-const { demos, getDemoComponent } = await server.ssrLoadModule('/src/examples/registry.ts')
+const { demos, getDemoComponent, getDemoSource } = await server.ssrLoadModule(
+  '/src/examples/registry.ts',
+)
+const { highlight } = await server.ssrLoadModule('/src/utils/highlight.ts')
 
 let failed = 0
 for (const demo of demos) {
@@ -37,6 +40,21 @@ for (const demo of demos) {
     console.error(`❌ ${demo.id} 渲染失败：`, err.message)
   }
 }
+
+// 顺带检查语法高亮：行数是否一致、标签是否闭合
+let hlFailed = 0
+for (const demo of demos) {
+  const src = getDemoSource(demo.id)
+  const lines = highlight(src)
+  const unbalanced = lines.filter(
+    (l) => (l.match(/<span/g) || []).length !== (l.match(/<\/span>/g) || []).length,
+  )
+  if (lines.length !== src.split('\n').length || unbalanced.length) {
+    hlFailed++
+    console.error(`❌ ${demo.id} 高亮异常（${unbalanced.length} 行标签不闭合）`)
+  }
+}
+console.log(hlFailed ? `高亮异常 ${hlFailed} 个` : '✅ 全部示例的源码高亮输出正常')
 
 await server.close()
 console.log(failed ? `\n${failed} 个示例渲染失败` : '\n全部示例渲染通过')

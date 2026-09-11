@@ -43,6 +43,6 @@ const onInput = (e: Event) => {
 }
 .tip {
   font-size: 12px;
-  color: #7c9691;
+  color: var(--text-sub);
 }
 </style>

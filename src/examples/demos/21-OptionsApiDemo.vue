@@ -114,14 +114,14 @@ export default {
 </script>
 
 <style scoped>
-/* 原有样式保留（深色玻璃卡片风格），配色微调成薄荷系，和整站主题统一 */
+/* 原有样式保留（深色玻璃卡片风格），配色微调成黄绿系，和整站主题统一 */
 .container {
   min-height: 320px;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* 原来是蓝紫色夜空渐变，这里换成同风格的深色薄荷渐变 */
-  background: linear-gradient(135deg, #0b3b36 0%, #10443d 45%, #14514a 100%);
+  /* 原来是蓝紫色夜空渐变，这里换成同风格的深橄榄绿渐变 */
+  background: linear-gradient(135deg, #1b2410 0%, #26320f 45%, #33421a 100%);
   border-radius: 10px;
   padding: 20px;
 }
@@ -187,8 +187,8 @@ export default {
   padding: 12px;
   border: none;
   border-radius: 10px;
-  /* 原来是紫橙渐变，这里换成薄荷绿渐变 */
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.85), rgba(94, 200, 180, 0.75));
+  /* 原来是紫橙渐变，这里换成黄绿渐变 */
+  background: linear-gradient(135deg, rgba(109, 143, 31, 0.9), rgba(169, 201, 74, 0.8));
   color: #fff;
   font-size: 15px;
   letter-spacing: 4px;
@@ -198,14 +198,14 @@ export default {
 
 .btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.35);
+  box-shadow: 0 6px 20px rgba(109, 143, 31, 0.35);
 }
 
 .result {
   margin: 12px 0 0;
   text-align: center;
   font-size: 13px;
-  color: #ffd591;
+  color: #e2f0a2;
   min-height: 18px;
 }
 </style>

@@ -23,7 +23,7 @@ import { inject } from 'vue'
 import { ThemeKey, UpdateThemeKey, CurrentUserKey } from './injection-keys'
 
 // inject( key, 默认值 )：祖先没提供时使用默认值
-const theme = inject(ThemeKey, { color: '#8a9a97', title: '默认标题' })
+const theme = inject(ThemeKey, { color: 'var(--text-weak)', title: '默认标题' })
 const updateColor = inject(UpdateThemeKey, () => {
   console.warn('祖先没有提供 updateTheme')
 })

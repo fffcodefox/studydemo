@@ -15,13 +15,13 @@ import ThemeConsumer from './ThemeConsumer.vue'
 
 <style scoped>
 .middle {
-  border: 1px dashed #cfe0dc;
+  border: 1px dashed var(--border-strong);
   padding: 8px;
   border-radius: 6px;
 }
 .tip {
   font-size: 12px;
-  color: #8a9a97;
+  color: var(--text-weak);
   margin: 0 0 6px;
 }
 </style>

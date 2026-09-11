@@ -68,7 +68,7 @@ h4 {
 }
 .tip {
   font-size: 12px;
-  color: #7c9691;
+  color: var(--text-sub);
 }
 /* 这里的 .my-card 是父组件的 scoped 样式，透传到子组件根元素后依然生效 */
 .my-card {

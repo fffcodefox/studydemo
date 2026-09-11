@@ -111,7 +111,7 @@ const say = (msg: string, e: MouseEvent) => {
 
 <style scoped>
 .outer {
-  border: 1px solid #cfe0dc;
+  border: 1px solid var(--border-strong);
   padding: 8px;
   margin: 6px 0;
   border-radius: 4px;
@@ -125,8 +125,8 @@ const say = (msg: string, e: MouseEvent) => {
 }
 .log-box {
   margin-top: 12px;
-  background: #f7fbfa;
-  border: 1px solid #e6efec;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
   border-radius: 4px;
   padding: 8px;
   min-height: 60px;
@@ -136,7 +136,7 @@ const say = (msg: string, e: MouseEvent) => {
   margin: 2px 0;
 }
 .tip {
-  color: #a8bab6;
+  color: var(--text-weak);
 }
 h4 {
   margin: 14px 0 6px;

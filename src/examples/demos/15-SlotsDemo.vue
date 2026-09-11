@@ -93,6 +93,6 @@ h4 {
 }
 .done {
   text-decoration: line-through;
-  color: #8a9a97;
+  color: var(--text-weak);
 }
 </style>

@@ -34,7 +34,7 @@ const user = ref({ name: '张三（来自子组件）', age: 20 })
 
 <style scoped>
 .card {
-  border: 1px solid #dbe8e5;
+  border: 1px solid var(--border-strong);
   border-radius: 8px;
   margin: 8px 0;
   overflow: hidden;
@@ -42,21 +42,21 @@ const user = ref({ name: '张三（来自子组件）', age: 20 })
 .card-header {
   background: var(--brand-lighter);
   padding: 8px 12px;
-  border-bottom: 1px solid #dbe8e5;
+  border-bottom: 1px solid var(--border-strong);
   font-size: 14px;
 }
 .card-body {
   padding: 12px;
 }
 .card-footer {
-  background: #f7fbfa;
+  background: var(--bg-soft);
   padding: 6px 12px;
-  border-top: 1px solid #dbe8e5;
+  border-top: 1px solid var(--border-strong);
   font-size: 12px;
-  color: #7c9691;
+  color: var(--text-sub);
 }
 .placeholder {
-  color: #a8bab6;
+  color: var(--text-weak);
   font-size: 12px;
   margin: 0;
 }

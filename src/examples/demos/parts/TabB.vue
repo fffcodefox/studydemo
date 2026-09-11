@@ -15,6 +15,6 @@ const count = ref(0)
 <style scoped>
 .tip {
   font-size: 12px;
-  color: #7c9691;
+  color: var(--text-sub);
 }
 </style>

@@ -144,7 +144,7 @@ h4 {
 }
 .mini-hr {
   border: none;
-  border-top: 1px dashed #e6efec;
+  border-top: 1px dashed var(--border);
   margin: 2px 0;
 }
 .row {
@@ -156,7 +156,7 @@ h4 {
 }
 .sub {
   font-size: 12px;
-  color: #7c9691;
+  color: var(--text-sub);
   margin: 4px 0;
 }
 </style>

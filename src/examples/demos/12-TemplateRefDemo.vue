@@ -119,14 +119,14 @@ onMounted(() => {
 
 <style scoped>
 .fn-box {
-  border: 1px solid #cfe0dc;
+  border: 1px solid var(--border-strong);
   padding: 8px;
   border-radius: 4px;
   margin: 4px 0;
 }
 .tip {
   font-size: 12px;
-  color: #7c9691;
+  color: var(--text-sub);
 }
 h4 {
   margin: 14px 0 6px;

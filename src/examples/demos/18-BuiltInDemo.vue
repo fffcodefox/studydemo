@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import {ref} from 'vue'
 
 // Teleport
 const showModal = ref(false)
@@ -181,7 +181,7 @@ const shuffle = () => {
 }
 .tip {
   font-size: 12px;
-  color: #7c9691;
+  color: var(--text-sub);
 }
 h4 {
   margin: 14px 0 6px;

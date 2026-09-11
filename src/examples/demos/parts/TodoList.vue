@@ -33,7 +33,7 @@ defineProps<{ items: TodoItem[] }>()
 }
 .todo-list li {
   padding: 4px 0;
-  border-bottom: 1px dashed #e6efec;
+  border-bottom: 1px dashed var(--border);
   display: flex;
   align-items: center;
   gap: 8px;

@@ -94,7 +94,7 @@ button.active {
   font-size: 13px;
 }
 .panel {
-  border: 1px dashed #cfe0dc;
+  border: 1px dashed var(--border-strong);
   border-radius: 6px;
   padding: 10px;
   margin: 8px 0;
@@ -102,7 +102,7 @@ button.active {
 }
 .tip {
   font-size: 12px;
-  color: #7c9691;
+  color: var(--text-sub);
 }
 h4 {
   margin: 14px 0 6px;

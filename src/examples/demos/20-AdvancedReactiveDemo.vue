@@ -157,7 +157,7 @@ const themeColor = ref('var(--brand)')
 }
 .tip {
   font-size: 12px;
-  color: #7c9691;
+  color: var(--text-sub);
 }
 h4 {
   margin: 14px 0 6px;
