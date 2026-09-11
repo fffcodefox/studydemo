@@ -1,4 +1,37 @@
-/* 全局基础样式（浅色主题，配合示例集使用） */
+/* ============================================================
+   全局基础样式 —— 低亮度护眼薄荷主题
+   设计原则：
+     1. 亮度不刺眼：大面积用带灰度的薄荷白，避免纯白 #fff
+     2. 两侧渐变：左右偏薄荷，中间留白，视觉上聚焦中间内容
+     3. 对比度足够：正文用深灰绿，保证长时间阅读不累
+   ============================================================ */
+
+/* ---------- 主题变量（改这里就能整体换色） ---------- */
+:root {
+  /* 品牌色：薄荷绿（偏深的 teal，保证文字对比度） */
+  --brand: #0f766e;
+  --brand-hover: #115e59;
+  --brand-light: #d7f2ec;      /* 选中 / 浅底 */
+  --brand-lighter: #eef8f5;    /* 更浅的底色 */
+  --brand-border: #a7ded2;     /* 边框 */
+
+  /* 背景层次 */
+  --bg-page: #eef4f2;          /* 页面底色 */
+  --bg-card: #fbfdfc;          /* 卡片（近白但带一点绿灰） */
+  --bg-soft: #f4f9f7;          /* 头部 / 侧栏等次级底 */
+  --bg-code: #f6faf9;          /* 代码块底 */
+  --bg-code-hover: #eef7f4;    /* 代码行 hover */
+
+  /* 边框 */
+  --border: #dfe8e5;
+  --border-strong: #cddad6;
+
+  /* 文字 */
+  --text: #2c3a37;             /* 主文字（不用纯黑，降低对比疲劳） */
+  --text-sub: #6b7c78;         /* 次要文字 */
+  --text-weak: #9aa8a5;        /* 弱化文字 / 行号 */
+}
+
 html,
 body,
 #app {
@@ -8,41 +41,54 @@ body,
 }
 
 body {
-  background: #f5f7fa;
-  color: #1f2937;
+  /* 两侧薄荷 + 中间留白的横向渐变，左右再叠一层柔和光晕 */
+  background:
+    radial-gradient(ellipse at 0% 45%, rgba(15, 118, 110, 0.10) 0%, transparent 42%),
+    radial-gradient(ellipse at 100% 55%, rgba(45, 167, 155, 0.12) 0%, transparent 42%),
+    linear-gradient(
+      90deg,
+      #e2efe9 0%,
+      #eaf3f0 18%,
+      #f2f7f5 38%,
+      #f2f7f5 62%,
+      #eaf3f0 82%,
+      #e2efe9 100%
+    );
+  background-attachment: fixed;
+  color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei',
     Roboto, Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 1.6;
 }
 
-/* 统一表单控件和按钮的基础外观，让所有示例风格一致 */
+/* ---------- 统一表单控件外观 ---------- */
 button {
   font-family: inherit;
   font-size: 13px;
   padding: 4px 12px;
-  border: 1px solid #d9d9d9;
-  background: #fff;
-  color: #374151;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-card);
+  color: var(--text);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 button:hover {
-  border-color: #1677ff;
-  color: #1677ff;
+  border-color: var(--brand);
+  color: var(--brand);
 }
 
 button:disabled {
-  color: #c0c4cc;
-  border-color: #e5e7eb;
+  color: #b3bebb;
+  border-color: var(--border);
   cursor: not-allowed;
 }
 
 button:disabled:hover {
-  border-color: #e5e7eb;
-  color: #c0c4cc;
+  border-color: var(--border);
+  color: #b3bebb;
 }
 
 input,
@@ -51,10 +97,10 @@ select {
   font-family: inherit;
   font-size: 13px;
   padding: 5px 8px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--border-strong);
   border-radius: 6px;
   outline: none;
-  color: #1f2937;
+  color: var(--text);
   background: #fff;
   transition: all 0.2s;
 }
@@ -62,8 +108,13 @@ select {
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: #1677ff;
-  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1);
+  border-color: var(--brand);
+  box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.12);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #adbab7;
 }
 
 ul {
@@ -71,9 +122,29 @@ ul {
 }
 
 code {
-  background: #f3f4f6;
+  background: #edf4f2;
+  color: #23645c;
   padding: 1px 4px;
   border-radius: 3px;
   font-family: Consolas, Monaco, 'Courier New', monospace;
   font-size: 12px;
+}
+
+/* ---------- 滚动条也调成薄荷色，细节统一 ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c7dad5;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a9c4bd;
+  background-clip: content-box;
 }

@@ -77,7 +77,7 @@ const list = ref(['苹果', '香蕉', '橙子'])
 const itemRefs = ref<HTMLLIElement[]>([])
 const highlightItems = () => {
   itemRefs.value.forEach((el) => {
-    el.style.background = '#e6f4ff'
+    el.style.background = 'var(--brand-light)'
   })
 }
 
@@ -119,18 +119,18 @@ onMounted(() => {
 
 <style scoped>
 .fn-box {
-  border: 1px solid #d9d9d9;
+  border: 1px solid #cfe0dc;
   padding: 8px;
   border-radius: 4px;
   margin: 4px 0;
 }
 .tip {
   font-size: 12px;
-  color: #888;
+  color: #7c9691;
 }
 h4 {
   margin: 14px 0 6px;
   font-size: 14px;
-  color: #1677ff;
+  color: var(--brand);
 }
 </style>

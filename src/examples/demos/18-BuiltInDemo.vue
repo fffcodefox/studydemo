@@ -128,7 +128,7 @@ const shuffle = () => {
 }
 .list-item {
   padding: 4px 8px;
-  background: #e6f4ff;
+  background: var(--brand-light);
   margin-bottom: 4px;
   border-radius: 4px;
 }
@@ -169,8 +169,8 @@ const shuffle = () => {
 }
 
 .box {
-  background: #f0f7ff;
-  border: 1px solid #91caff;
+  background: var(--brand-lighter);
+  border: 1px solid var(--brand-border);
   padding: 8px;
   border-radius: 4px;
   margin: 6px 0;
@@ -181,11 +181,11 @@ const shuffle = () => {
 }
 .tip {
   font-size: 12px;
-  color: #888;
+  color: #7c9691;
 }
 h4 {
   margin: 14px 0 6px;
   font-size: 14px;
-  color: #1677ff;
+  color: var(--brand);
 }
 </style>

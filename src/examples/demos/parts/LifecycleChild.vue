@@ -32,8 +32,8 @@ onUnmounted(() => log('onUnmounted'))
 
 <style scoped>
 .child {
-  border: 1px dashed #91caff;
-  background: #f0f7ff;
+  border: 1px dashed var(--brand-border);
+  background: var(--brand-lighter);
   border-radius: 6px;
   padding: 8px;
   margin: 8px 0;

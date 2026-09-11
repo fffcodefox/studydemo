@@ -60,14 +60,14 @@ const showShow = ref(true)
 
 <style scoped>
 .box {
-  border: 1px dashed #d9d9d9;
+  border: 1px dashed #cfe0dc;
   border-radius: 6px;
   padding: 8px;
   margin: 8px 0;
   min-height: 48px;
 }
 .tip {
-  color: #999;
+  color: #8a9a97;
 }
 .ops {
   margin-top: 12px;

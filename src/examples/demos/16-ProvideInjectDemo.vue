@@ -27,7 +27,7 @@ import { ThemeKey, UpdateThemeKey, CurrentUserKey, type Theme, type CurrentUser 
 
 // 1. 提供响应式数据：把整个 reactive 对象传下去，后代改了这里也会同步
 const theme = reactive<Theme>({
-  color: '#1677ff',
+  color: 'var(--brand)',
   title: 'Vue3 学习站',
 })
 
@@ -55,6 +55,6 @@ provide<string>('appVersion', '1.0.0')
 h4 {
   margin: 14px 0 6px;
   font-size: 14px;
-  color: #1677ff;
+  color: var(--brand);
 }
 </style>

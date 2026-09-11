@@ -143,12 +143,12 @@ const trimText = ref('')
   color: #555;
 }
 .val {
-  color: #888;
+  color: #7c9691;
   font-size: 12px;
 }
 .json {
-  background: #fafafa;
-  border: 1px solid #eee;
+  background: #f7fbfa;
+  border: 1px solid #e6efec;
   padding: 8px;
   border-radius: 4px;
   font-size: 12px;
@@ -156,6 +156,6 @@ const trimText = ref('')
 h4 {
   margin: 16px 0 8px;
   font-size: 14px;
-  color: #1677ff;
+  color: var(--brand);
 }
 </style>

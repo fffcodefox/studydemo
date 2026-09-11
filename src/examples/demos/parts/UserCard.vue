@@ -45,7 +45,7 @@ const tryModifyProp = () => {
 
 <style scoped>
 .user-card {
-  border: 1px solid #e5e7eb;
+  border: 1px solid #dbe8e5;
   border-radius: 6px;
   padding: 8px 12px;
   margin: 6px 0;

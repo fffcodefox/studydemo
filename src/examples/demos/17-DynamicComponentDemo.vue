@@ -86,7 +86,7 @@ button {
   margin-right: 6px;
 }
 button.active {
-  background: #1677ff;
+  background: var(--brand);
   color: #fff;
 }
 .switch {
@@ -94,7 +94,7 @@ button.active {
   font-size: 13px;
 }
 .panel {
-  border: 1px dashed #d9d9d9;
+  border: 1px dashed #cfe0dc;
   border-radius: 6px;
   padding: 10px;
   margin: 8px 0;
@@ -102,11 +102,11 @@ button.active {
 }
 .tip {
   font-size: 12px;
-  color: #888;
+  color: #7c9691;
 }
 h4 {
   margin: 14px 0 6px;
   font-size: 14px;
-  color: #1677ff;
+  color: var(--brand);
 }
 </style>

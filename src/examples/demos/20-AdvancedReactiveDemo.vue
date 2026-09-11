@@ -144,7 +144,7 @@ setInterval(() => {
 }, 3000)
 
 // 7. CSS v-bind：把 JS 变量绑定到 CSS 上
-const themeColor = ref('#1677ff')
+const themeColor = ref('var(--brand)')
 </script>
 
 <style scoped>
@@ -157,11 +157,11 @@ const themeColor = ref('#1677ff')
 }
 .tip {
   font-size: 12px;
-  color: #888;
+  color: #7c9691;
 }
 h4 {
   margin: 14px 0 6px;
   font-size: 14px;
-  color: #1677ff;
+  color: var(--brand);
 }
 </style>

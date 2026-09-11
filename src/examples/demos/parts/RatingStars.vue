@@ -44,7 +44,7 @@ const select = (n: number) => {
 .star {
   cursor: pointer;
   font-size: 22px;
-  color: #d9d9d9;
+  color: #cfe0dc;
 }
 .star.on {
   color: #faad14;

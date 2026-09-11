@@ -61,15 +61,15 @@ const textColor = ref('#389e0d')
 const fontSize = ref(16)
 
 // style 对象也可以整体定义（reactive 便于后续整体替换）
-const baseStyle = reactive({ color: '#1677ff', padding: '4px 8px' })
+const baseStyle = reactive({ color: 'var(--brand)', padding: '4px 8px' })
 const overrideStyle = reactive({ color: '#722ed1', backgroundColor: '#f9f0ff' })
 </script>
 
 <style scoped>
 /* 这些类在 <style scoped> 中定义，同样可以被 :class 动态绑定 */
 .active {
-  background: #e6f4ff;
-  border-left: 4px solid #1677ff;
+  background: var(--brand-light);
+  border-left: 4px solid var(--brand);
 }
 .text-danger {
   color: #d4380d;

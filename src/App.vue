@@ -1,7 +1,7 @@
 <!--
   Vue3 基础语法示例集 —— 导航壳
   左侧：示例目录（支持搜索、按分组归类）
-  右侧：示例说明 + 运行效果 + 源码（可一键复制）
+  右侧：示例说明 + 运行效果 + 源码（浅色高亮 + 行号，可一键复制）
 -->
 <template>
   <div class="app">
@@ -64,15 +64,24 @@
           <!-- 源码 -->
           <section class="panel">
             <div class="panel-head">
-              <span class="panel-title">源码：{{ current.id }}.vue</span>
+              <span class="panel-title">源码：{{ current.id }}.vue（共 {{ lineCount }} 行）</span>
               <div>
-                <button class="mini-btn" @click="copySource">{{ copied ? '已复制 ✓' : '复制代码' }}</button>
+                <button class="mini-btn" @click="copySource">
+                  {{ copied ? '已复制 ✓' : '复制代码' }}
+                </button>
                 <button class="mini-btn primary" @click="showSource = !showSource">
                   {{ showSource ? '收起源码' : '查看源码' }}
                 </button>
               </div>
             </div>
-            <pre v-if="showSource" class="code"><code>{{ source }}</code></pre>
+            <!-- 浅底 + 行号 + 语法高亮：接近编辑器的阅读体验，长时间看不累眼 -->
+            <div v-if="showSource" class="code-block">
+              <div v-for="(line, index) in highlighted" :key="index" class="code-line">
+                <span class="ln">{{ index + 1 }}</span>
+                <!-- 高亮函数内部已做 HTML 转义，这里 v-html 是安全的 -->
+                <span class="lc" v-html="line"></span>
+              </div>
+            </div>
           </section>
 
           <!-- 上/下翻页 -->
@@ -92,6 +101,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { demos, getDemoComponent, getDemoSource } from './examples/registry'
+import { highlight } from './utils/highlight'
 
 // 当前选中的示例 id（默认第一个）
 const currentId = ref(demos[0]?.id ?? '')
@@ -107,6 +117,9 @@ const current = computed(() => demos.find((d) => d.id === currentId.value))
 const currentComp = computed(() => getDemoComponent(currentId.value))
 // 当前示例的源码文本
 const source = computed(() => getDemoSource(currentId.value))
+// 高亮后的每一行（返回 HTML 字符串，配合 v-html 渲染）
+const highlighted = computed(() => highlight(source.value))
+const lineCount = computed(() => highlighted.value.length)
 // 当前示例在列表中的位置
 const currentIndex = computed(() => demos.findIndex((d) => d.id === currentId.value))
 
@@ -114,12 +127,10 @@ const currentIndex = computed(() => demos.findIndex((d) => d.id === currentId.va
 const filtered = computed(() => {
   const kw = keyword.value.trim().toLowerCase()
   if (!kw) return demos
-  return demos.filter((d) =>
-    [d.title, d.desc, ...d.points].join(' ').toLowerCase().includes(kw),
-  )
+  return demos.filter((d) => [d.title, d.desc, ...d.points].join(' ').toLowerCase().includes(kw))
 })
 
-// 按 group 分组，保持原有顺序（用 Map 保证插入顺序）
+// 按 group 分组，保持原有顺序（Map 保证插入顺序）
 const groupedDemos = computed(() => {
   const map = new Map<string, typeof demos>()
   for (const d of filtered.value) {
@@ -134,7 +145,6 @@ const select = (id: string) => {
   currentId.value = id
   showSource.value = false
   copied.value = false
-  // 切换示例时回到顶部
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
@@ -163,8 +173,6 @@ const copySource = async () => {
 /* ===== 整体布局 ===== */
 .app {
   min-height: 100vh;
-  background: #f5f7fa;
-  color: #1f2937;
 }
 
 .header {
@@ -173,8 +181,10 @@ const copySource = async () => {
   justify-content: space-between;
   gap: 16px;
   padding: 16px 24px;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--brand-border);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -183,16 +193,17 @@ const copySource = async () => {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
+  color: #134e4a;
 }
 .subtitle {
   margin: 4px 0 0;
   font-size: 13px;
-  color: #6b7280;
+  color: #5f7a76;
 }
 .badge {
-  background: #e6f4ff;
-  color: #1677ff;
-  border: 1px solid #91caff;
+  background: var(--brand-light);
+  color: var(--brand);
+  border: 1px solid var(--brand-border);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 12px;
@@ -216,23 +227,26 @@ const copySource = async () => {
   top: 88px;
   max-height: calc(100vh - 110px);
   overflow-y: auto;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--brand-border);
+  border-radius: 10px;
   padding: 12px;
 }
 .search {
   width: 100%;
   box-sizing: border-box;
   padding: 6px 10px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 13px;
   margin-bottom: 10px;
   outline: none;
 }
 .search:focus {
-  border-color: #1677ff;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
 }
 .group {
   margin-bottom: 10px;
@@ -240,7 +254,7 @@ const copySource = async () => {
 .group-title {
   margin: 8px 0 4px;
   font-size: 12px;
-  color: #9ca3af;
+  color: #7c9691;
   font-weight: 600;
 }
 .nav-item {
@@ -251,22 +265,23 @@ const copySource = async () => {
   margin-bottom: 2px;
   border: none;
   background: transparent;
-  border-radius: 5px;
+  border-radius: 6px;
   font-size: 13px;
-  color: #374151;
+  color: #3f5451;
   cursor: pointer;
+  transition: background 0.15s;
 }
 .nav-item:hover {
-  background: #f3f4f6;
+  background: var(--brand-lighter);
 }
 .nav-item.active {
-  background: #e6f4ff;
-  color: #1677ff;
+  background: var(--brand-light);
+  color: #115e59;
   font-weight: 600;
 }
 .empty {
   font-size: 13px;
-  color: #9ca3af;
+  color: #9aa8a5;
   text-align: center;
   padding: 12px 0;
 }
@@ -276,34 +291,37 @@ const copySource = async () => {
   flex: 1;
   min-width: 0;
 }
+.intro,
+.panel {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--brand-border);
+  border-radius: 10px;
+}
 .intro {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
   padding: 16px 20px;
 }
 .intro h2 {
   margin: 0 0 6px;
   font-size: 18px;
+  color: #134e4a;
 }
 .desc {
   margin: 0 0 10px;
   font-size: 13px;
-  color: #6b7280;
+  color: #5f7a76;
 }
 .points {
   margin: 0;
   padding-left: 18px;
   font-size: 13px;
-  color: #374151;
+  color: #3f5451;
   line-height: 1.9;
 }
 
 .panel {
   margin-top: 14px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
   overflow: hidden;
 }
 .panel-head {
@@ -312,52 +330,103 @@ const copySource = async () => {
   justify-content: space-between;
   gap: 12px;
   padding: 10px 16px;
-  background: #fafafa;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--brand-lighter);
+  border-bottom: 1px solid var(--brand-border);
 }
 .panel-title {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: #3f5451;
 }
 .stage {
   padding: 16px 20px;
 }
 
 .mini-btn {
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--border);
   background: #fff;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 3px 10px;
   font-size: 12px;
-  color: #374151;
+  color: #3f5451;
   cursor: pointer;
   margin-left: 6px;
 }
 .mini-btn:hover {
-  border-color: #1677ff;
-  color: #1677ff;
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .mini-btn.primary {
-  background: #1677ff;
-  border-color: #1677ff;
+  background: var(--brand);
+  border-color: var(--brand);
   color: #fff;
 }
 .mini-btn.primary:hover {
-  opacity: 0.85;
+  background: var(--brand-hover);
   color: #fff;
 }
 
-.code {
+/* ===== 代码块：浅色编辑器风格（护眼） ===== */
+.code-block {
   margin: 0;
-  padding: 14px 16px;
-  background: #1f2937;
-  color: #e5e7eb;
-  font-size: 12px;
-  line-height: 1.7;
+  padding: 12px 0;
+  background: #f8fbfa;
+  border-top: 1px solid #eaf1ef;
   overflow-x: auto;
-  max-height: 600px;
-  font-family: Consolas, Monaco, 'Courier New', monospace;
+  max-height: 620px;
+  font-family: 'JetBrains Mono', Consolas, Monaco, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.75;
+  tab-size: 2;
+}
+.code-line {
+  display: flex;
+  align-items: baseline;
+  min-height: 1.75em;
+}
+.code-line:hover {
+  background: #eef7f5;
+}
+.ln {
+  flex: none;
+  width: 48px;
+  padding-right: 16px;
+  text-align: right;
+  color: #b6c4c1;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+}
+.lc {
+  white-space: pre;
+  padding-right: 24px;
+  color: #2f3d3a;
+}
+
+/* v-html 插入的内容不带 scoped 属性，需要用 :deep() 才能命中 */
+.code-block :deep(.tk-comment) {
+  color: #8a9694;
+  font-style: italic;
+}
+.code-block :deep(.tk-string) {
+  color: #0a6b52;
+}
+.code-block :deep(.tk-keyword) {
+  color: #b4265a;
+}
+.code-block :deep(.tk-builtin) {
+  color: #8250df;
+}
+.code-block :deep(.tk-number) {
+  color: #a8580b;
+}
+.code-block :deep(.tk-tag) {
+  color: #16705a;
+}
+.code-block :deep(.tk-attr) {
+  color: #1c6bb5;
+}
+.code-block :deep(.tk-fn) {
+  color: #6b3fa0;
 }
 
 .pager {
@@ -368,18 +437,22 @@ const copySource = async () => {
   font-size: 13px;
 }
 .pager button {
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--border);
   background: #fff;
   border-radius: 6px;
   padding: 6px 14px;
   cursor: pointer;
-  color: #374151;
+  color: #3f5451;
+}
+.pager button:hover:not(:disabled) {
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .pager button:disabled {
-  color: #c0c4cc;
+  color: #b6c4c1;
   cursor: not-allowed;
 }
 .progress {
-  color: #9ca3af;
+  color: #8a9694;
 }
 </style>

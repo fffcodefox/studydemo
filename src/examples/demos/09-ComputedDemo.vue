@@ -100,11 +100,11 @@ const avgPrice = computed(() =>
 <style scoped>
 .tip {
   font-size: 12px;
-  color: #888;
+  color: #7c9691;
 }
 h4 {
   margin: 14px 0 6px;
   font-size: 14px;
-  color: #1677ff;
+  color: var(--brand);
 }
 </style>

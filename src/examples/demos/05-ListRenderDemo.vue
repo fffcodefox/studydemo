@@ -130,7 +130,7 @@ const adultUsers = computed(() => users.value.filter((u) => u.age >= 18))
 h4 {
   margin: 14px 0 6px;
   font-size: 14px;
-  color: #1677ff;
+  color: var(--brand);
 }
 .tag {
   display: inline-block;
@@ -139,12 +139,12 @@ h4 {
   line-height: 24px;
   text-align: center;
   margin-right: 6px;
-  background: #e6f4ff;
+  background: var(--brand-light);
   border-radius: 4px;
 }
 .mini-hr {
   border: none;
-  border-top: 1px dashed #eee;
+  border-top: 1px dashed #e6efec;
   margin: 2px 0;
 }
 .row {
@@ -156,7 +156,7 @@ h4 {
 }
 .sub {
   font-size: 12px;
-  color: #888;
+  color: #7c9691;
   margin: 4px 0;
 }
 </style>

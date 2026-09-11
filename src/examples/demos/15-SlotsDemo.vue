@@ -89,10 +89,10 @@ const todos = reactive([
 h4 {
   margin: 14px 0 6px;
   font-size: 14px;
-  color: #1677ff;
+  color: var(--brand);
 }
 .done {
   text-decoration: line-through;
-  color: #999;
+  color: #8a9a97;
 }
 </style>

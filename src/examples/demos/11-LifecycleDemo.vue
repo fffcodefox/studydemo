@@ -109,8 +109,8 @@ export default {
 
 <style scoped>
 .log-box {
-  background: #fafafa;
-  border: 1px solid #eee;
+  background: #f7fbfa;
+  border: 1px solid #e6efec;
   border-radius: 4px;
   padding: 8px;
   min-height: 100px;
@@ -123,11 +123,11 @@ export default {
   color: #52c41a;
 }
 .tip {
-  color: #bbb;
+  color: #a8bab6;
 }
 h4 {
   margin: 14px 0 6px;
   font-size: 14px;
-  color: #1677ff;
+  color: var(--brand);
 }
 </style>

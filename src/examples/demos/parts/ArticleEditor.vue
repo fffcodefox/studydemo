@@ -19,7 +19,7 @@ const content = defineModel<string>('content', { default: '' })
 
 <style scoped>
 .editor {
-  border: 1px solid #e5e7eb;
+  border: 1px solid #dbe8e5;
   border-radius: 6px;
   padding: 8px;
   margin: 6px 0;

@@ -38,8 +38,8 @@ const emit = defineEmits<{
   flex-wrap: wrap;
 }
 .type-list-comp li {
-  background: #f0f7ff;
-  border: 1px solid #91caff;
+  background: var(--brand-lighter);
+  border: 1px solid var(--brand-border);
   border-radius: 4px;
   padding: 2px 8px;
   cursor: pointer;

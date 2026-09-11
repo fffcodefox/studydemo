@@ -40,7 +40,7 @@ onUnmounted(() => {
   font-size: 13px;
 }
 .tag {
-  background: #1677ff;
+  background: var(--brand);
   color: #fff;
   padding: 1px 6px;
   border-radius: 3px;

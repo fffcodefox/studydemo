@@ -114,14 +114,15 @@ export default {
 </script>
 
 <style scoped>
-/* 原有样式保留（深色玻璃卡片风格），这里补上背景色，便于在浅色页面中独立展示 */
+/* 原有样式保留（深色玻璃卡片风格），配色微调成薄荷系，和整站主题统一 */
 .container {
   min-height: 320px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
-  border-radius: 8px;
+  /* 原来是蓝紫色夜空渐变，这里换成同风格的深色薄荷渐变 */
+  background: linear-gradient(135deg, #0b3b36 0%, #10443d 45%, #14514a 100%);
+  border-radius: 10px;
   padding: 20px;
 }
 
@@ -186,7 +187,8 @@ export default {
   padding: 12px;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(135deg, rgba(120, 119, 198, 0.8), rgba(255, 177, 153, 0.7));
+  /* 原来是紫橙渐变，这里换成薄荷绿渐变 */
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.85), rgba(94, 200, 180, 0.75));
   color: #fff;
   font-size: 15px;
   letter-spacing: 4px;
@@ -196,7 +198,7 @@ export default {
 
 .btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(120, 119, 198, 0.35);
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.35);
 }
 
 .result {

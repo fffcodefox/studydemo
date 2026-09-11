@@ -95,7 +95,7 @@ const onMove = (e: MouseEvent) => {
 
 <style scoped>
 .area {
-  border: 1px dashed #1677ff;
+  border: 1px dashed var(--brand);
   border-radius: 4px;
   padding: 12px;
   margin: 6px 0;
@@ -104,11 +104,11 @@ const onMove = (e: MouseEvent) => {
 }
 .tip {
   font-size: 12px;
-  color: #888;
+  color: #7c9691;
 }
 h4 {
   margin: 14px 0 6px;
   font-size: 14px;
-  color: #1677ff;
+  color: var(--brand);
 }
 </style>

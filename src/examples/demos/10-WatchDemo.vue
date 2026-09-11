@@ -140,13 +140,13 @@ watch(
 <style scoped>
 .tip {
   font-size: 12px;
-  color: #888;
+  color: #7c9691;
   margin-left: 8px;
 }
 .log-box {
   margin-top: 10px;
-  background: #fafafa;
-  border: 1px solid #eee;
+  background: #f7fbfa;
+  border: 1px solid #e6efec;
   border-radius: 4px;
   padding: 8px;
   min-height: 80px;
