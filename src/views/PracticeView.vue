@@ -10,7 +10,7 @@
   👉 想接真实后端时，把 loadData / createUser / updateUser / deleteUser
      三个方法换成调 src/api/user.ts（对应后端 /api/users 接口）即可。
 
-  视觉效果（护眼低亮）：樱花飘落 + 星空闪烁 + 右下樱花树 + 玻璃拟态。
+  视觉效果（护眼低亮）：樱花飘落 + 右下樱花树 + 玻璃拟态。
   导航栏：鼠标移到页面顶部（clientY<72）才浮现，平时隐藏。
   ==================================================================
 -->
@@ -26,11 +26,6 @@
     <!-- 樱花飘落 -->
     <div class="sakura" aria-hidden="true">
       <span v-for="p in petals" :key="'p' + p.id" class="petal" :style="p.style"></span>
-    </div>
-
-    <!-- 星空闪烁 -->
-    <div class="stars" aria-hidden="true">
-      <span v-for="s in stars" :key="'s' + s.id" class="star" :style="s.style"></span>
     </div>
 
     <!-- 樱花树（右下角，轻微摇摆） -->
@@ -258,26 +253,6 @@ const petals = ref(
         animationDuration: duration + 's',
         animationDelay: '-' + delay + 's',
         '--drift': drift + 'px',
-      } as Record<string, string>,
-    }
-  }),
-)
-const stars = ref(
-  Array.from({ length: 50 }, (_, id) => {
-    const top = Math.random() * 100
-    const left = Math.random() * 100
-    const size = 1 + Math.random() * 2.4
-    const duration = 2 + Math.random() * 4
-    const delay = Math.random() * 5
-    return {
-      id,
-      style: {
-        top: top + '%',
-        left: left + '%',
-        width: size + 'px',
-        height: size + 'px',
-        animationDuration: duration + 's',
-        animationDelay: '-' + delay + 's',
       } as Record<string, string>,
     }
   }),

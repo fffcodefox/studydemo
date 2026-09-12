@@ -39,10 +39,11 @@ const routes: RouteRecordRaw[] = [
   },
   {
     // 留给你自己写代码练手的空白页（Vue 3 语法 + 调后端）
+    // fullscreen：不套用全站外壳（SiteNav + 页脚），像 public/business-training.html 一样独立呈现
     path: '/practice',
     name: 'practice',
     component: () => import('../views/PracticeView.vue'),
-    meta: { title: '我的练习页' },
+    meta: { title: '我的练习页', fullscreen: true },
   },
   // 旧地址兜底，避免收藏/外链失效
   { path: '/api-demo', redirect: '/backend-demo' },

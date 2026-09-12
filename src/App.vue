@@ -4,9 +4,9 @@
 -->
 <template>
   <div class="shell">
-    <SiteNav/>
+    <SiteNav v-if="!isFullscreen"/>
 
-    <main class="main">
+    <main class="main" :class="{ full: isFullscreen }">
       <!-- 路由切换时做一次淡入淡出，避免生硬跳转 -->
       <RouterView v-slot="{ Component }">
         <Transition name="fade" mode="out-in">
@@ -15,7 +15,7 @@
       </RouterView>
     </main>
 
-    <footer class="footer">
+    <footer class="footer" v-if="!isFullscreen">
       <div class="footer-inner">
         <div class="footer-brand">
           <span class="logo">学</span>
@@ -57,9 +57,14 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { computed } from 'vue'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
 import SiteNav from './components/SiteNav.vue'
 import { tracks, navLinks } from './data/posts'
+
+// 全屏页面（如 /practice）不套用全站外壳：不渲染顶部导航与页脚
+const route = useRoute()
+const isFullscreen = computed(() => route.meta.fullscreen === true)
 </script>
 
 <style scoped>
@@ -72,6 +77,10 @@ import { tracks, navLinks } from './data/posts'
 .main {
   flex: 1;
   padding: 0 16px;
+}
+/* 全屏页面（练习页等）去掉外壳留白，由页面自身控制间距 */
+.main.full {
+  padding: 0;
 }
 
 /* ================= 页脚 ================= */
