@@ -39,6 +39,8 @@
             <b>开始</b>
             <RouterLink to="/study">基础 vue-study-demo</RouterLink>
             <RouterLink to="/backend-demo">接口示例</RouterLink>
+            <!-- public 下的独立静态页，整页跳转 -->
+            <a v-for="l in navLinks" :key="l.href" :href="l.href">{{ l.name }}</a>
           </div>
           <div>
             <b>技术栈</b>
@@ -57,7 +59,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import SiteNav from './components/SiteNav.vue'
-import { tracks } from './data/posts'
+import { tracks, navLinks } from './data/posts'
 </script>
 
 <style scoped>

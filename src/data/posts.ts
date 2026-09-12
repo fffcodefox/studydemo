@@ -223,6 +223,30 @@ export const posts: Post[] = [
   },
 ]
 
+/**
+ * 导航栏里的额外入口
+ *
+ * 和 tracks 的区别：tracks 都落在 SPA 路由里（用 RouterLink），
+ * 这里的入口指向 public/ 下的独立静态页，所以用普通 <a href> 跳转，
+ * 不经过 Vue Router —— 写成 RouterLink 会被兜底路由重定向回首页。
+ */
+export interface NavLink {
+  /** 显示名 */
+  name: string
+  /** 静态资源路径，public 下的文件按根路径访问 */
+  href: string
+  /** hover 提示 */
+  title?: string
+}
+
+export const navLinks: NavLink[] = [
+  {
+    name: '业务开发训练',
+    href: '/business-training.html',
+    title: '9 轮迭代，把需求 → 建模 → 接口 → 联调 → 上线走一遍',
+  },
+]
+
 /** 按 id 取方向 */
 export function getTrack(id: string): Track | undefined {
   return tracks.find((t) => t.id === id)

@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>业务开发训练营 · 计量器具检定工单系统</title>
+<meta name="description" content="一条从跑通接口到上线系统的完整交付路线，9 轮迭代，前端 + 后端 + 部署全流程练手。"/>
+<style>
+/* ============================================================
+   业务开发训练营 —— 独立静态页
+   设计原则：
+     1. 与主站同一套黄绿纸感配色，进来不跳戏
+     2. 护眼：暖白纸底、正文非纯黑、大面积低饱和，长时间读不累
+     3. 动态：鼠标跟随光晕、滚动进场、卡片悬浮与光泽扫过、数字滚动
+     4. 零依赖：不引任何 CDN，双击也能打开
+   ============================================================ */
+
+/* ---------- 变量：亮色（默认） ---------- */
+:root {
+  --brand: #6d8f1f;
+  --brand-hover: #57751a;
+  --brand-light: #e9f2cf;
+  --brand-lighter: #f4f9e6;
+  --brand-border: #d3e3a6;
+  --accent-1: #c9e08a;
+  --accent-2: #a9c94a;
+
+  --bg-page: #f7f4e9;
+  --bg-card: #fdfbf2;
+  --bg-soft: #f6f2e4;
+  --bg-code: #fbf8ec;
+
+  --border: #e5e0cc;
+  --border-strong: #d6d0b8;
+
+  --text: #333a26;
+  --text-sub: #6e7660;
+  --text-weak: #9aa088;
+
+  --shadow-sm: 0 1px 2px rgba(90, 96, 60, 0.06), 0 2px 6px rgba(90, 96, 60, 0.05);
+  --shadow-md: 0 1px 2px rgba(90, 96, 60, 0.07), 0 6px 18px rgba(90, 96, 60, 0.08);
+  --shadow-lg: 0 2px 4px rgba(90, 96, 60, 0.08), 0 16px 40px rgba(90, 96, 60, 0.13);
+
+  --glow-1: rgba(169, 201, 74, 0.18);
+  --glow-2: rgba(201, 224, 138, 0.26);
+  --grain-opacity: 0.14;
+
+  --font-serif: 'Songti SC', 'STSong', 'Source Han Serif SC', 'Noto Serif SC', 'SimSun', Georgia, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', Consolas, Monaco, 'Courier New', monospace;
+
+  --radius: 14px;
+  --maxw: 1080px;
+}
+
+/* ---------- 变量：夜间暖光（护眼用，不是纯黑） ---------- */
+html[data-theme='night'] {
+  --brand: #a8c95c;
+  --brand-hover: #bcd97a;
+  --brand-light: #2e3720;
+  --brand-lighter: #262d1c;
+  --brand-border: #414c2a;
+  --accent-1: #6f8a33;
+  --accent-2: #8aa844;
+
+  --bg-page: #1b1e17;
+  --bg-card: #23271e;
+  --bg-soft: #1f2319;
+  --bg-code: #191d14;
+
+  --border: #343a28;
+  --border-strong: #434a32;
+
+  --text: #e2e6d3;
+  --text-sub: #a7ae94;
+  --text-weak: #7c8370;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.24);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.32), 0 6px 18px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.36), 0 16px 40px rgba(0, 0, 0, 0.42);
+
+  --glow-1: rgba(138, 168, 68, 0.14);
+  --glow-2: rgba(111, 138, 51, 0.16);
+  --grain-opacity: 0.1;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.75;
+  background-color: var(--bg-page);
+  /* 两侧黄绿 + 中间纸白，和主站一致 */
+  background-image:
+    radial-gradient(ellipse at 5% 30%, var(--glow-1) 0%, transparent 48%),
+    radial-gradient(ellipse at 95% 68%, var(--glow-2) 0%, transparent 48%),
+    linear-gradient(90deg, #edf0da 0%, #f5f3e4 18%, #fbf9ef 38%, #fbf9ef 62%, #f5f3e4 82%, #edf0da 100%);
+  background-attachment: fixed;
+  transition: background-color .4s, color .4s;
+  overflow-x: hidden;
+}
+html[data-theme='night'] body {
+  background-image:
+    radial-gradient(ellipse at 5% 30%, var(--glow-1) 0%, transparent 48%),
+    radial-gradient(ellipse at 95% 68%, var(--glow-2) 0%, transparent 48%),
+    linear-gradient(90deg, #171a13 0%, #1b1e17 22%, #1e221a 44%, #1e221a 58%, #1b1e17 80%, #171a13 100%);
+}
+
+/* 纸纹噪点 */
+.grain {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+html[data-theme='night'] .grain { mix-blend-mode: screen; }
+
+/* 鼠标跟随光晕 */
+.cursor-glow {
+  position: fixed; left: 0; top: 0; width: 520px; height: 520px;
+  margin: -260px 0 0 -260px; border-radius: 50%;
+  pointer-events: none; z-index: 0; opacity: 0;
+  background: radial-gradient(circle, rgba(169,201,74,.20) 0%, rgba(169,201,74,.07) 40%, transparent 68%);
+  transition: opacity .6s ease;
+  will-change: transform;
+}
+html[data-theme='night'] .cursor-glow {
+  background: radial-gradient(circle, rgba(138,168,68,.18) 0%, transparent 66%);
+}
+
+/* ---------- 顶部阅读进度 ---------- */
+.read-progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0;
+  z-index: 60; border-radius: 0 3px 3px 0;
+  background: linear-gradient(90deg, var(--accent-2), var(--brand));
+  box-shadow: 0 0 10px rgba(109,143,31,.4);
+  transition: width .1s linear;
+}
+
+/* ---------- 顶栏 ---------- */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--bg-card); /* 旧浏览器兜底 */
+  background: color-mix(in srgb, var(--bg-card) 82%, transparent);
+  backdrop-filter: blur(12px) saturate(1.1);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+}
+.topbar-inner {
+  max-width: var(--maxw); margin: 0 auto; padding: 10px 22px;
+  display: flex; align-items: center; gap: 18px;
+}
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; flex: none; }
+.brand .logo {
+  width: 34px; height: 34px; display: grid; place-items: center;
+  border-radius: 8px; font-family: var(--font-serif); font-size: 17px; color: #fff;
+  background: linear-gradient(140deg, var(--accent-2), var(--brand));
+  box-shadow: 0 3px 10px rgba(109,143,31,.28);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 62% 100%, 0 62%);
+}
+.brand b { display: block; font-family: var(--font-serif); font-size: 15px; letter-spacing: 1px; line-height: 1.2; }
+.brand i { font-style: normal; font-size: 10px; letter-spacing: 2px; color: var(--text-weak); text-transform: uppercase; }
+
+.topnav { display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.topnav::-webkit-scrollbar { display: none; }
+.topnav a {
+  padding: 5px 11px; border-radius: 999px; font-size: 13px; white-space: nowrap;
+  color: var(--text-sub); text-decoration: none; transition: all .2s;
+}
+.topnav a:hover { color: var(--brand); background: var(--brand-lighter); }
+.topnav a.on { color: var(--brand); background: var(--brand-light); font-weight: 600; }
+
+.top-tools { display: flex; align-items: center; gap: 8px; flex: none; }
+.icon-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 999px; font-size: 13px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--bg-card); color: var(--text-sub);
+  transition: all .22s; font-family: inherit;
+}
+.icon-btn:hover { border-color: var(--brand-border); color: var(--brand); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+  padding: 6px 14px; border-radius: 999px; font-size: 13px; color: #fff; white-space: nowrap;
+  background: linear-gradient(135deg, var(--accent-2), var(--brand));
+  box-shadow: 0 4px 12px rgba(109,143,31,.26); transition: all .22s;
+}
+.back-btn:hover { transform: translateY(-1px); box-shadow: 0 7px 18px rgba(109,143,31,.34); color: #fff; }
+
+/* ---------- 布局 ---------- */
+.wrap { position: relative; z-index: 2; max-width: var(--maxw); margin: 0 auto; padding: 0 22px 90px; }
+.section { padding: 54px 0 8px; scroll-margin-top: 78px; }
+
+/* 滚动进场 */
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1); }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ---------- Hero ---------- */
+.hero { padding: 62px 0 26px; display: grid; grid-template-columns: 1.45fr .9fr; gap: 40px; align-items: center; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--brand);
+  background: var(--brand-lighter); border: 1px solid var(--brand-border);
+  padding: 4px 12px; border-radius: 999px; margin-bottom: 18px;
+}
+.eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--brand); animation: pulse 2.2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.7); } }
+
+.hero h1 {
+  margin: 0 0 16px; font-family: var(--font-serif); font-weight: 700;
+  font-size: clamp(30px, 4.4vw, 46px); line-height: 1.25; letter-spacing: .5px;
+  background: linear-gradient(100deg, var(--text) 20%, var(--brand) 90%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero .lead { margin: 0 0 22px; color: var(--text-sub); font-size: 15.5px; max-width: 40em; }
+.hero .lead b { color: var(--text); font-weight: 600; }
+
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; text-decoration: none; cursor: pointer;
+  padding: 10px 20px; border-radius: 999px; font-size: 14px; font-family: inherit;
+  border: 1px solid transparent; transition: all .24s;
+}
+.btn-primary {
+  color: #fff; background: linear-gradient(135deg, var(--accent-2), var(--brand));
+  box-shadow: 0 6px 18px rgba(109,143,31,.28);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(109,143,31,.36); color: #fff; }
+.btn-ghost { color: var(--text-sub); border-color: var(--border-strong); background: var(--bg-card); }
+.btn-ghost:hover { color: var(--brand); border-color: var(--brand-border); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+
+.hero-meta { display: flex; flex-wrap: wrap; gap: 22px; }
+.hero-meta .item { display: flex; flex-direction: column; }
+.hero-meta .num { font-family: var(--font-serif); font-size: 25px; font-weight: 700; color: var(--brand); line-height: 1.2; }
+.hero-meta .lbl { font-size: 12px; color: var(--text-weak); letter-spacing: .5px; }
+
+/* 右侧面板：进度环 + 场景 */
+.panel {
+  position: relative; padding: 26px 24px; border-radius: var(--radius);
+  background: var(--bg-card); /* 旧浏览器兜底 */
+  background: color-mix(in srgb, var(--bg-card) 86%, transparent);
+  border: 1px solid var(--border); box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.panel::before {
+  content: ''; position: absolute; inset: 0; border-radius: var(--radius); pointer-events: none;
+  background: linear-gradient(160deg, rgba(255,255,255,.5), transparent 45%);
+  opacity: .7;
+}
+html[data-theme='night'] .panel::before { background: linear-gradient(160deg, rgba(255,255,255,.05), transparent 45%); }
+.ring-wrap { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
+.ring { position: relative; width: 108px; height: 108px; flex: none; }
+.ring svg { transform: rotate(-90deg); }
+.ring .track { fill: none; stroke: var(--border); stroke-width: 9; }
+.ring .bar { fill: none; stroke: url(#ringGrad); stroke-width: 9; stroke-linecap: round; transition: stroke-dashoffset .9s cubic-bezier(.2,.7,.3,1); }
+.ring .pct {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-family: var(--font-serif); font-size: 22px; font-weight: 700; color: var(--brand);
+}
+.ring-info h3 { margin: 0 0 6px; font-family: var(--font-serif); font-size: 17px; }
+.ring-info p { margin: 0; font-size: 12.5px; color: var(--text-weak); line-height: 1.7; }
+
+.scene-list { list-style: none; margin: 0; padding: 0; }
+.scene-list li {
+  display: flex; gap: 10px; align-items: flex-start; padding: 9px 0;
+  border-top: 1px dashed var(--border); font-size: 13px; color: var(--text-sub);
+}
+.scene-list li:first-child { border-top: none; }
+.scene-list .k { color: var(--text-weak); flex: none; width: 62px; font-size: 12.5px; }
+.scene-list .v { color: var(--text); }
+
+/* ---------- 区块标题 ---------- */
+.sec-head { margin-bottom: 26px; }
+.sec-head .kicker { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-weak); }
+.sec-head h2 { margin: 6px 0 10px; font-family: var(--font-serif); font-size: 25px; letter-spacing: .5px; }
+.sec-head p { margin: 0; color: var(--text-sub); font-size: 14px; max-width: 62em; }
+.sec-head .rule {
+  height: 2px; width: 54px; margin-top: 14px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--brand), transparent);
+}
+
+/* ---------- 通用卡片 ---------- */
+.card {
+  position: relative; border-radius: var(--radius); border: 1px solid var(--border);
+  background: var(--bg-card); /* 旧浏览器兜底 */
+  background: color-mix(in srgb, var(--bg-card) 88%, transparent);
+  box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.card.pad { padding: 22px 24px; }
+
+/* ---------- 网格 ---------- */
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+
+/* 通用悬浮卡片 */
+.hoverable {
+  transition: transform .28s cubic-bezier(.2,.7,.3,1), box-shadow .28s, border-color .28s;
+  will-change: transform;
+}
+.hoverable:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--brand-border); }
+.hoverable::after {
+  content: ''; position: absolute; top: 0; left: -60%; width: 45%; height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255,255,255,.42), transparent);
+  transform: skewX(-18deg); transition: left .75s ease; pointer-events: none;
+}
+.hoverable:hover::after { left: 120%; }
+html[data-theme='night'] .hoverable::after { background: linear-gradient(105deg, transparent, rgba(255,255,255,.07), transparent); }
+
+/* 角色卡 */
+.role-card { padding: 18px 18px 16px; }
+.role-card .glyph { font-size: 22px; margin-bottom: 6px; }
+.role-card h4 { margin: 0 0 6px; font-size: 15px; font-family: var(--font-serif); }
+.role-card p { margin: 0 0 10px; font-size: 13px; color: var(--text-sub); }
+.role-card .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* ---------- 标签 ---------- */
+.chip {
+  display: inline-block; font-size: 11.5px; padding: 2px 9px; border-radius: 999px;
+  background: var(--brand-lighter); color: var(--brand); border: 1px solid var(--brand-border);
+  white-space: nowrap;
+}
+.chip.sub { background: var(--bg-soft); color: var(--text-sub); border-color: var(--border); }
+
+/* ---------- 状态流转图 ---------- */
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.node {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 1px;
+  padding: 8px 14px; border-radius: 10px; font-size: 13.5px; white-space: nowrap;
+  background: var(--bg-soft); border: 1px solid var(--border-strong); color: var(--text);
+  transition: all .24s;
+}
+.node i { font-style: normal; font-size: 10px; letter-spacing: 1px; color: var(--text-weak); }
+.node:hover { transform: translateY(-2px); border-color: var(--brand-border); box-shadow: var(--shadow-sm); }
+.node.end { background: var(--brand-lighter); border-color: var(--brand-border); color: var(--brand); }
+.node.end i { color: var(--brand); opacity: .7; }
+.arrow {
+  display: inline-flex; align-items: center; gap: 5px; font-size: 14px; color: var(--brand-border);
+  white-space: nowrap;
+}
+.arrow em {
+  font-style: normal; font-size: 11.5px; padding: 1px 7px; border-radius: 999px;
+  background: var(--brand-lighter); color: var(--brand); border: 1px solid var(--brand-border);
+}
+.flow-branch {
+  display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 16px; padding-top: 14px;
+  border-top: 1px dashed var(--border); font-size: 13px; color: var(--text-sub);
+}
+.flow-branch b { color: var(--brand); }
+
+/* ---------- 过滤器 ---------- */
+.filter-bar {
+  position: sticky; top: 55px; z-index: 30; margin-bottom: 20px; padding: 12px 14px;
+  border-radius: var(--radius); border: 1px solid var(--border);
+  background: var(--bg-card); /* 旧浏览器兜底 */
+  background: color-mix(in srgb, var(--bg-card) 90%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  box-shadow: var(--shadow-sm);
+}
+.filter-bar .search-in {
+  flex: 1; min-width: 150px; padding: 7px 14px; border-radius: 999px; font-size: 13px;
+  border: 1px solid var(--border); background: var(--bg-page); color: var(--text); font-family: inherit;
+  transition: all .2s;
+}
+.filter-bar .search-in:focus { outline: none; border-color: var(--brand-border); box-shadow: 0 0 0 3px var(--brand-lighter); }
+.seg { display: flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; background: var(--bg-page); }
+.seg button {
+  border: none; background: transparent; padding: 6px 13px; font-size: 12.5px; cursor: pointer;
+  color: var(--text-sub); font-family: inherit; transition: all .2s;
+}
+.seg button:hover { color: var(--brand); }
+.seg button.on { background: var(--brand-light); color: var(--brand); font-weight: 600; }
+.filter-bar .mini {
+  border: 1px solid var(--border); background: var(--bg-page); color: var(--text-sub);
+  border-radius: 999px; padding: 6px 12px; font-size: 12.5px; cursor: pointer; font-family: inherit;
+  transition: all .2s;
+}
+.filter-bar .mini:hover { color: var(--brand); border-color: var(--brand-border); }
+
+/* ---------- 迭代卡片 ---------- */
+.iters { display: flex; flex-direction: column; gap: 16px; }
+.iter {
+  position: relative; border-radius: var(--radius); border: 1px solid var(--border);
+  background: var(--bg-card); /* 旧浏览器兜底 */
+  background: color-mix(in srgb, var(--bg-card) 90%, transparent);
+  box-shadow: var(--shadow-sm); overflow: hidden;
+  transition: box-shadow .3s, border-color .3s, transform .3s;
+}
+.iter::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: linear-gradient(180deg, var(--accent-2), var(--brand));
+  opacity: .55; transition: opacity .3s;
+}
+.iter:hover { border-color: var(--brand-border); box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+.iter:hover::before { opacity: 1; }
+.iter.done-all { border-color: var(--brand-border); }
+.iter.done-all::before { opacity: 1; background: linear-gradient(180deg, #7fae2a, #4f7a12); }
+.iter.hide { display: none; }
+
+.iter-head { display: flex; align-items: flex-start; gap: 16px; padding: 18px 22px 16px 24px; cursor: pointer; }
+.iter-no {
+  flex: none; font-family: var(--font-serif); font-size: 26px; font-weight: 700; line-height: 1;
+  color: var(--brand); opacity: .5; min-width: 46px; padding-top: 2px;
+}
+.iter-title { flex: 1; min-width: 0; }
+.iter-title h3 { margin: 0 0 6px; font-family: var(--font-serif); font-size: 18.5px; display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.iter-title .goal { margin: 0; font-size: 13.5px; color: var(--text-sub); }
+.iter-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.badge {
+  font-size: 11.5px; padding: 2px 9px; border-radius: 6px;
+  background: var(--bg-soft); color: var(--text-sub); border: 1px solid var(--border);
+}
+.badge.lv { background: var(--brand-lighter); color: var(--brand); border-color: var(--brand-border); }
+.iter-right { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.iter-pct { font-family: var(--font-serif); font-size: 15px; color: var(--brand); font-weight: 700; }
+.iter-caret {
+  width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%;
+  color: var(--text-weak); font-size: 11px; transition: transform .3s, background .2s;
+  border: 1px solid var(--border);
+}
+.iter.open .iter-caret { transform: rotate(180deg); background: var(--brand-lighter); color: var(--brand); }
+
+/* 细进度条 */
+.bar-mini { width: 84px; height: 4px; border-radius: 3px; background: var(--border); overflow: hidden; }
+.bar-mini i { display: block; height: 100%; width: 0; border-radius: 3px; background: linear-gradient(90deg, var(--accent-2), var(--brand)); transition: width .5s cubic-bezier(.2,.7,.3,1); }
+
+/* 折叠体 */
+.iter-body { max-height: 0; overflow: hidden; transition: max-height .45s cubic-bezier(.2,.7,.3,1); }
+.iter-inner { padding: 4px 24px 22px; border-top: 1px dashed var(--border); }
+
+.story {
+  margin: 16px 0 18px; padding: 13px 16px; border-radius: 10px; font-size: 13.5px;
+  background: var(--bg-soft); border-left: 3px solid var(--brand-border); color: var(--text-sub);
+}
+.story b { color: var(--text); }
+
+.task-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 16px; }
+.task-col h5 {
+  margin: 0 0 10px; font-size: 13px; letter-spacing: .5px; display: flex; align-items: center; gap: 7px;
+  color: var(--text-sub); font-weight: 600;
+}
+.task-col h5 .tag { font-size: 10.5px; padding: 1px 7px; border-radius: 5px; font-weight: 500; }
+.task-col.fe h5 .tag { background: #e6f0ff; color: #2a5d9e; border: 1px solid #cfe0f5; }
+.task-col.be h5 .tag { background: #f0ecff; color: #5a49a8; border: 1px solid #ddd6f7; }
+html[data-theme='night'] .task-col.fe h5 .tag { background: #1d2a3a; color: #86b5e8; border-color: #2b3d52; }
+html[data-theme='night'] .task-col.be h5 .tag { background: #262236; color: #a99be6; border-color: #383253; }
+
+.tasks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.tasks li { display: flex; gap: 9px; align-items: flex-start; font-size: 13.5px; color: var(--text-sub); }
+.tasks li label { display: flex; gap: 9px; align-items: flex-start; cursor: pointer; width: 100%; }
+.tasks input[type='checkbox'] { position: absolute; opacity: 0; width: 0; height: 0; }
+.tick {
+  flex: none; width: 17px; height: 17px; margin-top: 3px; border-radius: 5px;
+  border: 1.5px solid var(--border-strong); background: var(--bg-card);
+  display: grid; place-items: center; transition: all .2s;
+}
+.tick svg { width: 10px; height: 10px; opacity: 0; transform: scale(.4); transition: all .2s; }
+.tasks input:checked + .tick { background: var(--brand); border-color: var(--brand); }
+.tasks input:checked + .tick svg { opacity: 1; transform: scale(1); }
+.tasks input:focus-visible + .tick { box-shadow: 0 0 0 3px var(--brand-lighter); }
+.tasks input:checked ~ .txt { color: var(--text-weak); text-decoration: line-through; text-decoration-color: var(--border-strong); }
+.tasks li label:hover .txt { color: var(--text); }
+.tasks .txt { transition: color .2s; }
+
+.accept { margin-top: 4px; }
+.accept h5 { margin: 0 0 9px; font-size: 13px; color: var(--text-sub); display: flex; gap: 7px; align-items: center; }
+.accept ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.accept li { position: relative; padding-left: 20px; font-size: 13.5px; color: var(--text-sub); }
+.accept li::before {
+  content: ''; position: absolute; left: 4px; top: 9px; width: 6px; height: 6px;
+  border-radius: 2px; background: var(--brand); opacity: .6; transform: rotate(45deg);
+}
+.hint {
+  margin-top: 15px; padding: 11px 14px; border-radius: 10px; font-size: 13px;
+  background: var(--brand-lighter); border: 1px dashed var(--brand-border); color: var(--text-sub);
+}
+.hint b { color: var(--brand); }
+
+/* ---------- 代码块 ---------- */
+pre.code {
+  margin: 0; padding: 16px 18px; border-radius: 10px; overflow-x: auto;
+  background: var(--bg-code); border: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.8; color: var(--text);
+}
+pre.code .c { color: var(--text-weak); }
+pre.code .k { color: #8b5cf6; }
+pre.code .s { color: #4c8b3f; }
+pre.code .n { color: #b45309; }
+html[data-theme='night'] pre.code .k { color: #b9a6f5; }
+html[data-theme='night'] pre.code .s { color: #9ecb86; }
+html[data-theme='night'] pre.code .n { color: #e0b070; }
+
+/* ---------- 表格 ---------- */
+.table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--bg-card); }
+th, td { padding: 10px 13px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { background: var(--bg-soft); font-weight: 600; color: var(--text-sub); font-size: 12.5px; white-space: nowrap; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr { transition: background .18s; }
+tbody tr:hover { background: var(--brand-lighter); }
+td code, th code { font-family: var(--font-mono); font-size: 12px; background: var(--bg-soft); padding: 1px 5px; border-radius: 4px; color: var(--brand); }
+
+/* ---------- 交付规范 / 坑 ---------- */
+.dod { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.dod li { display: flex; gap: 11px; align-items: flex-start; font-size: 13.5px; color: var(--text-sub); }
+.dod .idx {
+  flex: none; width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center;
+  font-size: 11.5px; font-family: var(--font-serif); font-weight: 700;
+  background: var(--brand-lighter); color: var(--brand); border: 1px solid var(--brand-border);
+}
+.dod b { color: var(--text); }
+
+.pit { display: flex; gap: 11px; align-items: flex-start; padding: 11px 0; border-top: 1px dashed var(--border); font-size: 13.5px; }
+.pit:first-child { border-top: none; }
+.pit .warn { flex: none; font-size: 15px; line-height: 1.4; }
+.pit b { color: var(--brand); }
+.pit span { color: var(--text-sub); }
+
+/* ---------- 浮动按钮 ---------- */
+.fab {
+  position: fixed; right: 22px; bottom: 24px; z-index: 55;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.fab a, .fab button {
+  width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+  border: 1px solid var(--border); background: var(--bg-card);
+  color: var(--text-sub); cursor: pointer; text-decoration: none; font-size: 15px; font-family: inherit;
+  box-shadow: var(--shadow-md); backdrop-filter: blur(8px);
+  transition: all .24s; opacity: 0; pointer-events: none; transform: translateY(10px);
+}
+.fab a.show, .fab button.show { opacity: 1; pointer-events: auto; transform: none; }
+.fab a:hover, .fab button:hover { color: var(--brand); border-color: var(--brand-border); transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+
+/* ---------- 侧边目录 ---------- */
+.toc {
+  position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 40;
+  display: flex; flex-direction: column; gap: 10px; align-items: flex-end;
+}
+.toc a {
+  display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 11.5px;
+  color: var(--text-weak); transition: color .2s;
+}
+.toc a::after {
+  content: ''; width: 18px; height: 2px; border-radius: 2px; background: var(--border-strong);
+  transition: all .28s;
+}
+.toc a:hover { color: var(--brand); }
+.toc a.on { color: var(--brand); font-weight: 600; }
+.toc a.on::after { width: 30px; background: var(--brand); }
+
+/* ---------- 空态 ---------- */
+.empty {
+  padding: 40px 20px; text-align: center; color: var(--text-weak); font-size: 14px;
+  border: 1px dashed var(--border-strong); border-radius: var(--radius); background: var(--bg-soft);
+}
+
+/* ---------- 页脚 ---------- */
+.foot {
+  margin-top: 60px; padding: 30px 0 10px; border-top: 1px solid var(--border);
+  display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;
+  color: var(--text-weak); font-size: 12.5px;
+}
+.foot a { color: var(--text-sub); text-decoration: none; border-bottom: 1px dashed var(--border-strong); }
+.foot a:hover { color: var(--brand); border-color: var(--brand-border); }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 980px) {
+  .toc { display: none; }
+  .hero { grid-template-columns: 1fr; gap: 26px; padding-top: 42px; }
+  .task-cols { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .topnav { display: none; }
+  .brand i { display: none; }
+  .iter-head { padding: 16px 16px 14px 18px; gap: 12px; }
+  .iter-inner { padding: 4px 16px 18px; }
+  .wrap { padding: 0 14px 80px; }
+  .filter-bar { top: 52px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="cursor-glow" id="glow"></div>
+<div class="read-progress" id="readProgress"></div>
+
+<!-- ===================== 顶栏 ===================== -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/">
+      <span class="logo">学</span>
+      <span><b>业务开发训练营</b><i>Study Lab</i></span>
+    </a>
+    <nav class="topnav" id="topnav">
+      <a href="#brief">场景</a>
+      <a href="#iters">迭代路线</a>
+      <a href="#api">接口契约</a>
+      <a href="#db">表设计</a>
+      <a href="#dod">交付规范</a>
+      <a href="#pit">避坑</a>
+    </nav>
+    <div class="top-tools">
+      <button class="icon-btn" id="themeBtn" title="切换亮色 / 夜间暖光">🌙 夜间</button>
+      <a class="back-btn" href="/">← 返回首页</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ===================== Hero ===================== -->
+  <section class="hero">
+    <div class="reveal">
+      <span class="eyebrow">业务开发训练</span>
+      <h1>用一条真实业务线，<br/>把前后端交付走一遍</h1>
+      <p class="lead">
+        前面练的是<b>语法和接口</b>，这里练的是<b>交付</b>。
+        下面是一套完整的业务需求 —— 计量器具检定工单系统，拆成 9 轮迭代，
+        每轮都写清楚前端做什么、后端做什么、怎么算做完。
+        照着做一遍，你会摸到「需求 → 建模 → 接口 → 联调 → 上线」的完整节奏。
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#iters">开始第一轮 →</a>
+        <a class="btn btn-ghost" href="/study">先补基础语法</a>
+        <a class="btn btn-ghost" href="/backend-demo">看看现有接口</a>
+      </div>
+      <div class="hero-meta">
+        <div class="item"><span class="num" id="statIters">0</span><span class="lbl">轮迭代</span></div>
+        <div class="item"><span class="num" id="statTasks">0</span><span class="lbl">个任务</span></div>
+        <div class="item"><span class="num" id="statDone">0</span><span class="lbl">已完成</span></div>
+        <div class="item"><span class="num">4</span><span class="lbl">类角色</span></div>
+      </div>
+    </div>
+
+    <aside class="panel reveal">
+      <div class="ring-wrap">
+        <div class="ring">
+          <svg width="108" height="108" viewBox="0 0 108 108">
+            <defs>
+              <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#a9c94a"/><stop offset="100%" stop-color="#6d8f1f"/>
+              </linearGradient>
+            </defs>
+            <circle class="track" cx="54" cy="54" r="46"/>
+            <circle class="bar" id="ringBar" cx="54" cy="54" r="46" stroke-dasharray="289" stroke-dashoffset="289"/>
+          </svg>
+          <div class="pct" id="ringPct">0%</div>
+        </div>
+        <div class="ring-info">
+          <h3>整体进度</h3>
+          <p>每勾掉一个任务就会自动保存，<br/>关掉浏览器再打开还在。</p>
+        </div>
+      </div>
+      <ul class="scene-list">
+        <li><span class="k">业务域</span><span class="v">计量器具检定与工单流转</span></li>
+        <li><span class="k">技术栈</span><span class="v">Vue 3 + TS ／ Spring Boot + MyBatis-Plus ／ MySQL ／ Redis</span></li>
+        <li><span class="k">交付形态</span><span class="v">前端静态站 + 后端 jar，nginx 反代 /api</span></li>
+        <li><span class="k">怎么算完成</span><span class="v">每轮都有验收标准，逐条对，不看「感觉做完了」</span></li>
+      </ul>
+    </aside>
+  </section>
+
+  <!-- ===================== 场景 ===================== -->
+  <section class="section" id="brief">
+    <div class="sec-head reveal">
+      <div class="kicker">Context</div>
+      <h2>先把业务说清楚，再写代码</h2>
+      <p>
+        很多人做练手项目卡在「不知道做什么」，因为需求太虚。这里给一套足够具体、又不用真去工厂调研的设定，
+        照着它你能把增删改查、状态流转、审批、附件、统计、权限全都串起来。
+      </p>
+      <div class="rule"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card pad hoverable reveal">
+        <h4 style="margin:0 0 10px;font-family:var(--font-serif);font-size:16px">业务背景</h4>
+        <p style="margin:0 0 12px;font-size:13.5px;color:var(--text-sub)">
+          公司里有几千件计量器具（卡尺、千分尺、压力表、扭矩扳手……），
+          每件都有<b>检定周期</b>，到期必须送检。检定员要建工单、传报告，
+          主管要审批，到期没检的要被提醒，管理层要看合格率和及时率。
+        </p>
+        <p style="margin:0;font-size:13.5px;color:var(--text-sub)">
+          核心诉求：<b>一件器具、一次检定、一条可追溯的工单</b>。
+          所有复杂业务都是围绕这句长出来的。
+        </p>
+      </div>
+      <div class="card pad hoverable reveal">
+        <h4 style="margin:0 0 10px;font-family:var(--font-serif);font-size:16px">核心实体与关系</h4>
+        <ul class="scene-list" style="margin-top:4px">
+          <li><span class="k">器具</span><span class="v">编号唯一、有量程与精度等级、挂使用部门与责任人</span></li>
+          <li><span class="k">工单</span><span class="v">一个器具的一次检定，有状态、有审批、有附件</span></li>
+          <li><span class="k">流程</span><span class="v">工单的状态迁移记录，含审批意见</span></li>
+          <li><span class="k">附件</span><span class="v">检定报告 / 现场照片，挂在工单上</span></li>
+          <li><span class="k">消息</span><span class="v">超期提醒、审批通知，推给具体的人</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid-3 reveal" style="margin-top:16px">
+      <div class="card role-card hoverable">
+        <div class="glyph">🧑‍🔧</div>
+        <h4>检定员</h4>
+        <p>建工单、填检定结果、传报告、提交审批。</p>
+        <div class="chips"><span class="chip">工单录入</span><span class="chip sub">附件上传</span></div>
+      </div>
+      <div class="card role-card hoverable">
+        <div class="glyph">🧑‍💼</div>
+        <h4>主管</h4>
+        <p>审批 / 驳回，处理超期工单，看本部门数据。</p>
+        <div class="chips"><span class="chip">审批</span><span class="chip sub">催办</span></div>
+      </div>
+      <div class="card role-card hoverable">
+        <div class="glyph">📋</div>
+        <h4>质量管理员</h4>
+        <p>看合格率、及时率，导出明细，抽查报告。</p>
+        <div class="chips"><span class="chip">看板</span><span class="chip sub">导出</span></div>
+      </div>
+      <div class="card role-card hoverable">
+        <div class="glyph">⚙️</div>
+        <h4>系统管理员</h4>
+        <p>配角色权限、维护器具台账与检定周期规则。</p>
+        <div class="chips"><span class="chip">RBAC</span><span class="chip sub">数据权限</span></div>
+      </div>
+    </div>
+
+    <div class="card pad reveal" style="margin-top:16px">
+      <h4 style="margin:0 0 16px;font-family:var(--font-serif);font-size:16px">工单状态机（第 3 轮要自己实现它）</h4>
+
+      <!-- 用色块 + 箭头画流程，比 ASCII 图稳定，窄屏也能自动换行 -->
+      <div class="flow">
+        <span class="node">草稿 <i>DRAFT</i></span>
+        <span class="arrow"><em>提交</em>→</span>
+        <span class="node">待审核 <i>SUBMITTED</i></span>
+        <span class="arrow"><em>通过</em>→</span>
+        <span class="node">已通过 <i>APPROVED</i></span>
+        <span class="arrow"><em>完成</em>→</span>
+        <span class="node end">已存档 <i>DONE</i></span>
+      </div>
+
+      <div class="flow-branch">
+        <span><b>驳回</b> 从待审核退回草稿，必须填驳回原因</span>
+        <span><b>撤回</b> 提交人可在审批前收回</span>
+        <span><b>取消</b> 任意未完成状态都可取消，归档不再流转</span>
+      </div>
+
+      <p class="hint" style="margin-top:14px">
+        <b>练习点：</b>把「谁能改、能从哪到哪」写成一张配置表，
+        而不是在一堆 <code>if (status === 3)</code> 里硬编码。
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 迭代 ===================== -->
+  <section class="section" id="iters">
+    <div class="sec-head reveal">
+      <div class="kicker">Roadmap</div>
+      <h2>9 轮迭代，从跑通接口到上线收尾</h2>
+      <p>
+        每一轮都是一个可以独立交付的小系统。建议<b>一轮一个 git 分支、一轮一次提交</b>，
+        做完一轮再开下一轮 —— 别一口气全写完，那样什么也学不到。
+      </p>
+      <div class="rule"></div>
+    </div>
+
+    <div class="filter-bar reveal">
+      <input class="search-in" id="kw" type="search" placeholder="搜需求，例如：分页 / 状态机 / 上传 / 权限…"/>
+      <div class="seg" id="segStatus">
+        <button data-v="all" class="on">全部</button>
+        <button data-v="todo">未完成</button>
+        <button data-v="done">已完成</button>
+      </div>
+      <button class="mini" id="expandAll">全部展开</button>
+      <button class="mini" id="collapseAll">全部收起</button>
+      <button class="mini" id="reset">重置勾选</button>
+    </div>
+
+    <div class="iters" id="itersBox"></div>
+    <div class="empty" id="emptyBox" style="display:none">没有匹配的需求，换个关键词试试。</div>
+  </section>
+
+  <!-- ===================== 接口契约 ===================== -->
+  <section class="section" id="api">
+    <div class="sec-head reveal">
+      <div class="kicker">Contract</div>
+      <h2>接口契约：先定好，再各写各的</h2>
+      <p>
+        前后端并行开发的前提是「契约先冻结」。下面是这套系统要用的统一返回体与几个关键接口，
+        实现时可以照着抄，也可以自己改 —— 但改了要同步告诉「对方」。
+      </p>
+      <div class="rule"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card pad hoverable reveal">
+        <h5 style="margin:0 0 10px;font-size:13px;color:var(--text-sub)">统一返回体 · Result&lt;T&gt;</h5>
+        <pre class="code">{
+  <span class="s">"code"</span>: <span class="n">200</span>,          <span class="c">// 200 成功；4xx 业务失败；5xx 系统异常</span>
+  <span class="s">"message"</span>: <span class="s">"success"</span>,  <span class="c">// 给人看的中文提示</span>
+  <span class="s">"data"</span>: { },            <span class="c">// 业务数据，失败时为 null</span>
+  <span class="s">"traceId"</span>: <span class="s">"a1b2c3"</span>     <span class="c">// 排障用，日志里能查到这一整条链路</span>
+}</pre>
+      </div>
+      <div class="card pad hoverable reveal">
+        <h5 style="margin:0 0 10px;font-size:13px;color:var(--text-sub)">分页返回体 · PageResult&lt;T&gt;</h5>
+        <pre class="code">{
+  <span class="s">"records"</span>: [],     <span class="c">// 当前页数据</span>
+  <span class="s">"total"</span>: <span class="n">128</span>,     <span class="c">// 总条数</span>
+  <span class="s">"current"</span>: <span class="n">1</span>,     <span class="c">// 当前页（从 1 开始）</span>
+  <span class="s">"size"</span>: <span class="n">10</span>        <span class="c">// 每页条数</span>
+}</pre>
+      </div>
+    </div>
+
+    <div class="table-wrap reveal" style="margin-top:16px">
+      <table>
+        <thead><tr><th>方法</th><th>路径</th><th>说明</th><th>关键校验</th><th>迭代</th></tr></thead>
+        <tbody>
+          <tr><td><code>GET</code></td><td><code>/api/ping</code></td><td>连通性与版本</td><td>—</td><td>00</td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/work-orders</code></td><td>分页 + 多条件查询</td><td>时间范围、size ≤ 100</td><td>01</td></tr>
+          <tr><td><code>POST</code></td><td><code>/api/work-orders</code></td><td>新建工单</td><td>器具编号存在、日期顺序</td><td>02</td></tr>
+          <tr><td><code>PUT</code></td><td><code>/api/work-orders/{id}</code></td><td>编辑工单（乐观锁）</td><td>版本号一致、状态可编辑</td><td>02</td></tr>
+          <tr><td><code>POST</code></td><td><code>/api/work-orders/{id}/transition</code></td><td>状态流转</td><td>迁移合法、有权限</td><td>03</td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/work-orders/{id}/logs</code></td><td>操作日志时间线</td><td>只看有权限的工单</td><td>03</td></tr>
+          <tr><td><code>POST</code></td><td><code>/api/files</code></td><td>上传附件（multipart）</td><td>类型白名单、大小、魔数</td><td>04</td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/my/tasks</code></td><td>我的待办</td><td>按当前用户过滤</td><td>05</td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/stats/summary</code></td><td>统计汇总</td><td>时间跨度 ≤ 1 年</td><td>07</td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/work-orders/export</code></td><td>导出 Excel（流式）</td><td>条件必填、结果集上限</td><td>07</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card pad reveal" style="margin-top:16px">
+      <h5 style="margin:0 0 10px;font-size:13px;color:var(--text-sub)">状态流转 · 请求体示例</h5>
+      <pre class="code"><span class="k">POST</span> /api/work-orders/10086/transition
+{
+  <span class="s">"action"</span>: <span class="s">"REJECT"</span>,        <span class="c">// SUBMIT / APPROVE / REJECT / WITHDRAW / FINISH / CANCEL</span>
+  <span class="s">"comment"</span>: <span class="s">"报告缺少检定员签章"</span>,
+  <span class="s">"version"</span>: <span class="n">3</span>              <span class="c">// 乐观锁：版本对不上说明别人改过了，直接拒绝</span>
+}</pre>
+      <p class="hint" style="margin-top:12px">
+        <b>为什么要 version？</b>两个人同时点「通过」，没乐观锁就会写两次日志、走两次流程。
+        加上它，第二次提交会收到「数据已被修改，请刷新」，这才是正确的行为。
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 表设计 ===================== -->
+  <section class="section" id="db">
+    <div class="sec-head reveal">
+      <div class="kicker">Schema</div>
+      <h2>表设计：别人给的，你也可以自己改</h2>
+      <p>
+        这是最小的可用结构。重点看三处：<b>状态与审计字段</b>（谁在什么时候改的）、
+        <b>索引怎么建</b>（查询条件决定索引）、<b>日志表为什么要独立</b>（业务表只存当前状态，历史不可变）。
+      </p>
+      <div class="rule"></div>
+    </div>
+
+    <div class="card pad reveal">
+      <pre class="code"><span class="k">CREATE TABLE</span> t_work_order (
+  id            <span class="k">BIGINT</span>       <span class="k">NOT NULL</span> <span class="k">AUTO_INCREMENT</span> <span class="k">COMMENT</span> <span class="s">'主键'</span>,
+  order_no      <span class="k">VARCHAR</span>(<span class="n">32</span>)  <span class="k">NOT NULL</span>                <span class="k">COMMENT</span> <span class="s">'工单号 WO+日期+序列'</span>,
+  tool_code     <span class="k">VARCHAR</span>(<span class="n">64</span>)  <span class="k">NOT NULL</span>                <span class="k">COMMENT</span> <span class="s">'器具编号'</span>,
+  tool_name     <span class="k">VARCHAR</span>(<span class="n">128</span>)                          <span class="k">COMMENT</span> <span class="s">'器具名称'</span>,
+  dept_id       <span class="k">BIGINT</span>                                 <span class="k">COMMENT</span> <span class="s">'使用部门，数据权限用'</span>,
+  status        <span class="k">TINYINT</span>      <span class="k">NOT NULL</span> <span class="k">DEFAULT</span> <span class="n">0</span>      <span class="k">COMMENT</span> <span class="s">'0草稿 1待审 2通过 3驳回 4完成 9取消'</span>,
+  result        <span class="k">TINYINT</span>                                 <span class="k">COMMENT</span> <span class="s">'检定结果：1合格 2不合格'</span>,
+  plan_date     <span class="k">DATE</span>                                    <span class="k">COMMENT</span> <span class="s">'计划检定日期'</span>,
+  finish_date   <span class="k">DATE</span>                                    <span class="k">COMMENT</span> <span class="s">'实际完成日期'</span>,
+  version       <span class="k">INT</span>          <span class="k">NOT NULL</span> <span class="k">DEFAULT</span> <span class="n">0</span>      <span class="k">COMMENT</span> <span class="s">'乐观锁'</span>,
+  deleted       <span class="k">TINYINT</span>      <span class="k">NOT NULL</span> <span class="k">DEFAULT</span> <span class="n">0</span>      <span class="k">COMMENT</span> <span class="s">'逻辑删除，布尔字段不带 is 前缀'</span>,
+  create_by     <span class="k">VARCHAR</span>(<span class="n">64</span>),
+  create_time   <span class="k">DATETIME</span>     <span class="k">NOT NULL</span>,
+  update_by     <span class="k">VARCHAR</span>(<span class="n">64</span>),
+  update_time   <span class="k">DATETIME</span>,
+  <span class="k">PRIMARY KEY</span> (id),
+  <span class="k">UNIQUE KEY</span> uk_order_no (order_no),
+  <span class="c">-- 索引跟着「列表页的查询条件」走：状态 + 计划日期 + 部门</span>
+  <span class="k">KEY</span> idx_status_plan (status, plan_date),
+  <span class="k">KEY</span> idx_tool_code (tool_code)
+) <span class="k">ENGINE</span>=InnoDB <span class="k">DEFAULT CHARSET</span>=utf8mb4 <span class="k">COMMENT</span> <span class="s">'检定工单'</span>;
+
+<span class="c">-- 操作日志：只追加，不更新不删除。业务表存「现在」，日志表存「怎么变成现在的」</span>
+<span class="k">CREATE TABLE</span> t_work_order_log (
+  id            <span class="k">BIGINT</span>      <span class="k">NOT NULL</span> <span class="k">AUTO_INCREMENT</span>,
+  order_id      <span class="k">BIGINT</span>      <span class="k">NOT NULL</span>                <span class="k">COMMENT</span> <span class="s">'工单 id'</span>,
+  action        <span class="k">VARCHAR</span>(<span class="n">32</span>)                          <span class="k">COMMENT</span> <span class="s">'动作'</span>,
+  from_status   <span class="k">TINYINT</span>                              <span class="k">COMMENT</span> <span class="s">'迁移前状态'</span>,
+  to_status     <span class="k">TINYINT</span>                              <span class="k">COMMENT</span> <span class="s">'迁移后状态'</span>,
+  comment       <span class="k">VARCHAR</span>(<span class="n">500</span>)                         <span class="k">COMMENT</span> <span class="s">'审批/驳回意见'</span>,
+  operator      <span class="k">VARCHAR</span>(<span class="n">64</span>),
+  operate_time  <span class="k">DATETIME</span>    <span class="k">NOT NULL</span>,
+  <span class="k">PRIMARY KEY</span> (id),
+  <span class="k">KEY</span> idx_order_time (order_id, operate_time)
+) <span class="k">ENGINE</span>=InnoDB <span class="k">DEFAULT CHARSET</span>=utf8mb4 <span class="k">COMMENT</span> <span class="s">'工单操作日志'</span>;</pre>
+      <p class="hint" style="margin-top:14px">
+        <b>自己动手改一改：</b>把 <code>tool_code</code> 换成你熟悉的业务字段（比如设备编号、客户编号），
+        表名跟着改，其余结构可以直接复用 —— 复杂业务的骨架其实是通用的。
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 交付规范 ===================== -->
+  <section class="section" id="dod">
+    <div class="sec-head reveal">
+      <div class="kicker">Delivery</div>
+      <h2>怎么算「这一轮做完了」</h2>
+      <p>
+        这是整套训练里最值钱的一段。代码写完不等于交付完，
+        用下面这份清单卡自己，练的是工程习惯。
+      </p>
+      <div class="rule"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card pad reveal">
+        <ul class="dod">
+          <li><span class="idx">1</span><span><b>接口先定契约</b> —— 动手前把请求 / 响应 / 错误码贴进 README 或接口文档，前后端据此并行。</span></li>
+          <li><span class="idx">2</span><span><b>后端先给 Mock</b> —— 返回假数据的接口先跑通，前端不必等真逻辑。</span></li>
+          <li><span class="idx">3</span><span><b>正常 / 边界 / 异常各测一遍</b> —— 空列表、超大分页、超长时间跨度、重复提交、非法状态迁移。</span></li>
+          <li><span class="idx">4</span><span><b>前端三态齐全</b> —— 加载中、空数据、请求失败，缺一个都不算完。</span></li>
+          <li><span class="idx">5</span><span><b>后端不留裸异常</b> —— 抛出的每个异常都有 code 与中文提示，日志里有 traceId。</span></li>
+          <li><span class="idx">6</span><span><b>一个迭代一个分支</b> —— <code>feat/01-list-page</code>，合并前保证 <code>npm run build</code> 与 <code>mvn -q compile</code> 都过。</span></li>
+          <li><span class="idx">7</span><span><b>写清楚「这轮踩了什么坑」</b> —— 记进 README，下一轮你会回来感谢自己。</span></li>
+        </ul>
+      </div>
+      <div class="card pad reveal">
+        <h5 style="margin:0 0 12px;font-size:13px;color:var(--text-sub)">推荐节奏（一轮 = 一个循环）</h5>
+        <ul class="dod">
+          <li><span class="idx">①</span><span>读需求，把不确定的点写成问题（<b>不要猜</b>）</span></li>
+          <li><span class="idx">②</span><span>画表 / 定接口契约，10 分钟就够，别过度设计</span></li>
+          <li><span class="idx">③</span><span>后端写接口 + 自测（curl / Postman）</span></li>
+          <li><span class="idx">④</span><span>前端接接口，补三态与交互细节</span></li>
+          <li><span class="idx">⑤</span><span>按验收标准逐条过一遍，截图存档</span></li>
+          <li><span class="idx">⑥</span><span>提交、写清 commit message、开下一轮</span></li>
+        </ul>
+        <p class="hint" style="margin-top:14px">
+          <b>commit 建议：</b><code>feat(order): 工单列表分页与多条件查询</code>、
+          <code>fix(auth): 修正 token 过期后未跳登录</code>。
+          别写「修改」「提交」「111」—— 半年后你自己都认不出来。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 避坑 ===================== -->
+  <section class="section" id="pit">
+    <div class="sec-head reveal">
+      <div class="kicker">Pitfalls</div>
+      <h2>这些坑我替你踩过了</h2>
+      <p>都是这套项目里真实遇到过的，遇到时别怀疑人生，照着改就行。</p>
+      <div class="rule"></div>
+    </div>
+    <div class="card pad reveal">
+      <div class="pit"><span class="warn">🔌</span><span><b>代理超时 / 502</b> —— 开发代理的 target 写 <code>127.0.0.1</code> 而不是 <code>localhost</code>，Node 会优先解析成 IPv6 <code>::1</code>，而后端只监听 IPv4。</span></div>
+      <div class="pit"><span class="warn">🪤</span><span><b>代理把前端路由吃掉</b> —— 代理 key 必须写正则 <code>^/api/</code>，写成 <code>/api</code> 会把 <code>/api-demo</code> 这类前端路由也转发给后端。</span></div>
+      <div class="pit"><span class="warn">🔤</span><span><b>JDBC 字符集报 UnsupportedEncodingException</b> —— <code>characterEncoding</code> 填 Java 字符集名 <code>UTF-8</code>，不是 MySQL 的 <code>utf8mb4</code>。</span></div>
+      <div class="pit"><span class="warn">🧵</span><span><b>配了连接池却没有池依赖</b> —— <code>spring.redis.lettuce.pool.*</code> 需要额外引入 <code>commons-pool2</code>，否则启动时 <code>NoClassDefFoundError</code>。</span></div>
+      <div class="pit"><span class="warn">🕐</span><span><b>时间差 8 小时</b> —— 后端统一 <code>serverTimezone=Asia/Shanghai</code> + <code>spring.jackson.time-zone</code>，前端统一格式化成 <code>yyyy-MM-dd HH:mm</code>，别让两边各转一次。</span></div>
+      <div class="pit"><span class="warn">💥</span><span><b>循环依赖 / N+1 查询</b> —— 列表页用 <code>select *</code> 加循环查关联，1 页 10 条能打 11 次库；改成一次 join 或批量 in 查询。</span></div>
+      <div class="pit"><span class="warn">📄</span><span><b>导出大文件 OOM</b> —— 别把百万行一次性 <code>List</code> 装进内存再写，用流式导出（EasyExcel / SXSSF）分批 flush。</span></div>
+      <div class="pit"><span class="warn">🔁</span><span><b>重复提交</b> —— 前端按钮禁用只是体验，后端还要靠<b>唯一索引 + 乐观锁 + 幂等键</b>兜底。</span></div>
+      <div class="pit"><span class="warn">🚪</span><span><b>越权访问</b> —— 光在页面藏按钮不算权限，每个接口都要校验「这条数据是不是你的」。改 <code>id</code> 就能看别人数据是最常见的漏洞。</span></div>
+      <div class="pit"><span class="warn">🧊</span><span><b>缓存与数据库不一致</b> —— 先更新库再删缓存，别反过来；缓存加过期时间，别指望它永远对。</span></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>业务开发训练营 · 与主站同一套主题，可直接离线打开</span>
+    <span>
+      <a href="/">返回首页</a> ·
+      <a href="/study">Vue 语法示例集</a> ·
+      <a href="/backend-demo">接口示例页</a>
+    </span>
+  </footer>
+</div>
+
+<!-- 浮动按钮 -->
+<div class="fab">
+  <a href="/" id="fabHome" title="返回首页">🏠</a>
+  <button id="fabTop" title="回到顶部">↑</button>
+</div>
+
+<!-- 侧边目录 -->
+<nav class="toc" id="toc">
+  <a href="#brief">场景设定</a>
+  <a href="#iters">迭代路线</a>
+  <a href="#api">接口契约</a>
+  <a href="#db">表设计</a>
+  <a href="#dod">交付规范</a>
+  <a href="#pit">避坑清单</a>
+</nav>
+
+<script>
+/* ============================================================
+   数据区：所有需求都写在这里，改数据就会改页面
+   想加一轮：往 ITERATIONS 里 push 一个对象即可
+   ============================================================ */
+const ITERATIONS = [
+  {
+    no: '00',
+    title: '地基：把一条链路跑通',
+    level: '入门',
+    tags: ['工程约定', '统一返回体', '异常处理'],
+    goal: '建立前后端的工程约定，后面所有需求都长在这套约定上。',
+    story: '作为开发者，我希望前端只通过同源 <b>/api</b> 调后端，且任何异常都有统一结构，这样我不用为每个接口单独写错误处理。',
+    fe: [
+      '封装 src/api/http.ts：超时控制、统一解析 code、非成功码抛 ApiError',
+      '写 src/api/types.ts，与后端 DTO 一一对应（含泛型 PageResult<T>）',
+      '在 .env.development 配 VITE_API_BASE=/api，Vite 代理指向后端 8080',
+      '页面放一个后端连通状态灯，调 /api/ping 显示版本与耗时',
+    ],
+    be: [
+      '统一返回体 Result<T> 与 ResultCode 枚举（常量类私有构造，无魔法值）',
+      '@RestControllerAdvice 全局异常处理：业务异常 / 参数校验 / 兜底',
+      '自定义 BizException，提取 @Validated 失败的字段级提示',
+      '请求日志切面：记录 URI、耗时、入参摘要、traceId',
+      'GET /api/ping 返回服务名、版本、服务器时间',
+    ],
+    accept: [
+      '所有接口返回结构完全一致，前端只在一处解析 code',
+      '参数校验失败时返回可读中文提示，而不是 500 堆栈',
+      '前端断掉后端时显示友好错误，控制台无未捕获异常',
+    ],
+    hint: '别把 Map 塞进 Result 的 data，类型会失控；分页统一用 records/total/current/size 四个字段。',
+  },
+  {
+    no: '01',
+    title: '列表：分页与多条件查询',
+    level: '基础',
+    tags: ['分页', '条件查询', 'URL 状态'],
+    goal: '把「查得到」做扎实：条件、排序、翻页、空态、性能，一个都不能少。',
+    story: '作为检定员，我要按器具编号 / 状态 / 日期范围筛选并翻页，快速定位到待处理的工单。',
+    fe: [
+      '查询表单：输入防抖 300ms，避免每敲一个字就打一次接口',
+      '表格：长文本省略 + tooltip，列宽自适应，表头可排序',
+      '分页组件：页码、每页条数、跳页、总条数',
+      '三态处理：骨架屏加载 / 空数据引导 / 请求失败可重试',
+      '查询条件同步到 URL query，刷新和分享链接都不丢状态',
+    ],
+    be: [
+      '分页查询接口，接 MyBatis-Plus IPage，返回 PageResult',
+      '条件构造器：状态、关键字模糊、计划日期区间，全为空时不加条件',
+      '查询 DTO 参数校验：size 上限 100，日期起止顺序校验',
+      '建联合索引 status + plan_date，避免全表扫描',
+      '只 select 需要的列，禁止 select *',
+    ],
+    accept: [
+      '刷新页面后查询条件和页码保持不变',
+      '空结果有明确提示与「清空条件」入口',
+      '万级数据下单次查询响应 < 300ms（用 EXPLAIN 验证走索引）',
+    ],
+    hint: '深翻页（第 10000 页）会慢，先用「延迟关联」或记住最后一条 id 的游标方案顶住。',
+  },
+  {
+    no: '02',
+    title: '表单：新建与编辑',
+    level: '基础',
+    tags: ['表单校验', '事务', '乐观锁'],
+    goal: '把「写得对」做扎实：校验、事务、并发、重复提交。',
+    story: '作为检定员，我要新建工单并立即拿到工单号，编辑时不能被别人的修改覆盖。',
+    fe: [
+      '受控表单 + 校验规则：器具编号格式、日期先后、必填项',
+      '字段级错误提示，提交前整体校验并聚焦第一个错误字段',
+      '提交按钮防重复点击，请求中显示 loading',
+      '编辑页数据回填，未保存时离开给出提示',
+      '新建成功后跳转到详情并提示工单号',
+    ],
+    be: [
+      'DTO 与实体分离，用分组校验区分新增 / 更新场景',
+      '工单号生成：WO + yyyyMMdd + 序列，用 Redis 自增保证唯一',
+      '乐观锁 @Version：更新时带上 version，冲突返回明确提示',
+      '服务层事务边界：主表 + 日志表同事务写入',
+      '唯一索引兜底：order_no 加唯一约束，防并发同号',
+    ],
+    accept: [
+      '非法入参返回字段级错误码，前端能定位到具体字段',
+      '并发提交不会产生重复工单号（可用脚本压测验证）',
+      '编辑时使用旧 version 提交会被拒绝，并提示刷新',
+    ],
+    hint: '事务只包住必须一起成功的写操作，别把 RPC、文件上传这类耗时动作放进事务里。',
+  },
+  {
+    no: '03',
+    title: '状态机：流转与操作日志',
+    level: '进阶',
+    tags: ['状态机', 'AOP', '可追溯'],
+    goal: '业务状态不能随便改，每一步都要留痕。',
+    story: '作为主管，我要审批或驳回工单，并且每次流转都要能查到是谁、什么时候、因为什么。',
+    fe: [
+      '状态徽章：不同状态不同颜色，一眼看出卡在哪一步',
+      '流转按钮按当前状态显隐，不可用时给出原因提示',
+      '驳回必须填写原因（弹窗 + 必填校验）',
+      '操作日志时间线：按时间倒序，展示 from → to 与意见',
+    ],
+    be: [
+      '状态机：枚举 + 允许的迁移表，非法迁移直接拒绝',
+      '流转接口带 action 参数，服务层统一走同一入口',
+      'AOP 切面自动记录操作日志（谁、何时、从哪到哪、意见）',
+      '日志表只追加不修改，接口只提供查询',
+      '状态变更与日志写入在同一事务内完成',
+    ],
+    accept: [
+      '非法迁移（如草稿直接完成）被拒绝并返回明确原因',
+      '每次流转都能在时间线里找到对应记录，且不可篡改',
+      '并发流转只有一个成功，另一个收到版本冲突提示',
+    ],
+    hint: '把「允许的迁移」写成一张 Map<状态, Set<可去状态>>，加新状态时只改这张表，不改逻辑。',
+  },
+  {
+    no: '04',
+    title: '附件：上传、校验与预览',
+    level: '进阶',
+    tags: ['文件上传', '安全', '进度'],
+    goal: '文件上传是最容易出安全问题的地方，认真做一遍。',
+    story: '作为检定员，我要上传检定报告和现场照片，能看进度、能预览、失败的能单独重试。',
+    fe: [
+      '拖拽 + 点击两种上传方式，多文件选择',
+      '每个文件独立进度条，单个失败可单独重试',
+      '图片本地预览（URL.createObjectURL），用完记得 revoke',
+      '前端压缩：超过 2MB 的图片先压到合理尺寸再传',
+      '限制单文件与总量大小，超限直接拦下并说明原因',
+    ],
+    be: [
+      'MultipartFile 校验：扩展名白名单 + 大小上限 + 文件魔数校验',
+      '文件名安全处理：重命名存储，防路径穿越（../）',
+      '存储抽象接口，本地磁盘与对象存储可切换',
+      '下载 / 预览接口校验归属，防止改 id 看到别人的文件',
+      '上传记录落库，与工单关联，支持删除与重新上传',
+    ],
+    accept: [
+      '改扩展名伪装的文件被魔数校验拦下',
+      '含 ../ 的文件名不会写到目标目录之外',
+      '无权限用户访问下载链接返回 403 而非文件内容',
+    ],
+    hint: '只校验扩展名等于没校验，攻击者把 .jsp 改成 .jpg 就进来了；魔数 + 白名单 + 重命名三件套一起上。',
+  },
+  {
+    no: '05',
+    title: '审批流：多级节点与会签 / 或签',
+    level: '进阶',
+    tags: ['工作流', '幂等', '节点推进'],
+    goal: '从「一个审批人」升级到「一条审批链」，这是复杂业务的分水岭。',
+    story: '作为流程设计者，我要配置多级审批节点，支持会签（都通过才算过）和或签（一人通过即过）。',
+    fe: [
+      '步骤条 / 横向时间线展示流程节点与当前进度',
+      '当前节点高亮，已办节点标记审批人及结果',
+      '待办 / 已办两个视图切换',
+      '审批意见输入，支持常用意见快捷选择',
+    ],
+    be: [
+      '流程实例表 + 任务表：一个实例多条任务，一条任务一个处理人',
+      '节点推进算法：会签需全部通过，或签任一通过即可推进',
+      '审批人解析：按角色、按指定人、按部门负责人',
+      '幂等控制：同一任务重复提交只生效一次',
+      '超时未处理的任务按规则自动催办或自动推进',
+    ],
+    accept: [
+      '会签场景下少一人通过流程不前进；或签一人通过即前进',
+      '同一任务重复提交不产生多条记录',
+      '驳回后按配置回到指定节点，历史记录完整保留',
+    ],
+    hint: '流程表设计时把「节点定义」和「节点实例」分开，改流程配置时历史实例不受影响。',
+  },
+  {
+    no: '06',
+    title: '定时与通知：超期提醒',
+    level: '进阶',
+    tags: ['定时任务', '分布式锁', '消息'],
+    goal: '让系统自己动起来，并且在多实例部署下不出错。',
+    story: '作为主管，我希望工单在计划日期前 3 天自动提醒责任人，不用我天天盯着列表。',
+    fe: [
+      '站内消息中心：列表、未读红点、标记已读、清空已读',
+      '点击消息跳转到对应工单详情',
+      '未读数实时刷新（轮询或 SSE 任选，说明你的取舍）',
+    ],
+    be: [
+      '定时任务：每天早 8 点扫描即将超期与已超期的工单',
+      '分布式锁（Redis SET NX + 过期）保证集群下只有一个节点执行',
+      '消息表 + 未读数缓存，未读数以 Redis 为准并定期校正',
+      '提醒去重：同一工单同一天只提醒一次',
+      '失败重试与执行日志，任务跑没跑成功要看得见',
+    ],
+    accept: [
+      '任务重复触发不会产生重复消息（手动触发两次验证）',
+      'Redis 未读数与消息表 count 一致',
+      '多实例部署时同一时刻只有一个实例在跑任务',
+    ],
+    hint: '定时任务最容易死在「上次没跑完这次又开始了」，加任务级互斥锁 + 超时保护。',
+  },
+  {
+    no: '07',
+    title: '看板：统计聚合与导出',
+    level: '进阶',
+    tags: ['聚合查询', '导出', '缓存'],
+    goal: '从明细到汇总，练的是「数据怎么算」而不是「怎么查」。',
+    story: '作为质量管理员，我要看本月工单量、合格率、平均处理时长，并能导出明细核对。',
+    fe: [
+      '图表：工单量趋势（折线）、合格率（环形）、部门分布（柱状）',
+      '时间维度切换：本周 / 本月 / 自定义区间',
+      '加载时用骨架屏，切换区间不闪白',
+      '导出按钮带进度提示与失败重试',
+    ],
+    be: [
+      '聚合 SQL：group by 时间维度与部门，注意 NULL 与除零',
+      '统计结果缓存 5 分钟，key 带查询条件，避免重复大查询',
+      '导出用流式写入（EasyExcel / SXSSF），分批 flush 防 OOM',
+      '导出量上限保护，超限时提示缩小范围',
+      '统计口径写进注释或文档，避免「数字对不上」的扯皮',
+    ],
+    accept: [
+      '看板数字与明细导出结果能对上（抽查一个部门验证）',
+      '导出 10 万行不 OOM，内存曲线平稳',
+      '缓存过期后能自动回源，且回源期间不阻塞其他请求',
+    ],
+    hint: '先想清楚口径（按创建时间还是完成时间？算不算已取消？），再写 SQL —— 口径错了，SQL 再快也没用。',
+  },
+  {
+    no: '08',
+    title: '权限与部署：上线收尾',
+    level: '综合',
+    tags: ['RBAC', '数据权限', '部署'],
+    goal: '让它变成一个能给别人用的系统，而不是只在你电脑上跑得起来。',
+    story: '作为管理员，我要控制不同角色能看到和修改的数据范围，并且这套系统要能部署上线。',
+    fe: [
+      '路由守卫：未登录跳登录页，登录后回跳原地址',
+      '按钮级权限指令（v-perm），无权限直接不渲染',
+      'token 过期自动跳登录，并清理本地状态',
+      '403 / 404 友好页面，给出返回入口',
+    ],
+    be: [
+      '认证：登录发 token（JWT 或会话，说明取舍），校验与续期',
+      '授权：RBAC 角色 - 权限点，接口级鉴权注解',
+      '数据权限：本人 / 本部门 / 全部 三档，拼到查询条件里',
+      '防越权：所有按 id 操作的接口都校验数据归属',
+      '部署：Jenkins 构建前端 → nginx，后端 jar 交给 systemd，nginx 反代 /api',
+    ],
+    accept: [
+      '越权访问返回 403，未登录返回 401 且前端自动跳登录',
+      '不同角色登录后看到的菜单与数据范围不同',
+      '部署脚本可重复执行（幂等），回滚只需切回上一版本目录',
+    ],
+    hint: '把「谁能做什么」集中成权限点常量，前端用字符串引用；散落在各处的硬编码是权限系统的头号敌人。',
+  },
+];
+
+/* ============================================================
+   交互逻辑
+   ============================================================ */
+const STORE_KEY = 'study-lab:business-training:done:v1';
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/** 已勾选任务集合，格式 '轮次序号:类型:下标' */
+let done = new Set();
+try {
+  const raw = localStorage.getItem(STORE_KEY);
+  if (raw) done = new Set(JSON.parse(raw));
+} catch (e) { /* 隐私模式等场景忽略即可 */ }
+
+const save = () => {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify([...done])); } catch (e) {}
+};
+
+const taskKey = (itIdx, type, tIdx) => itIdx + ':' + type + ':' + tIdx;
+
+/** 单轮任务总数 */
+const totalOf = (it) => it.fe.length + it.be.length;
+
+/** 单轮已完成数 */
+const doneOf = (itIdx, it) => {
+  let n = 0;
+  it.fe.forEach((_, i) => { if (done.has(taskKey(itIdx, 'fe', i))) n++; });
+  it.be.forEach((_, i) => { if (done.has(taskKey(itIdx, 'be', i))) n++; });
+  return n;
+};
+
+const TICKSVG = '<svg viewBox="0 0 12 12" fill="none"><path d="M2 6.2 4.6 8.8 10 3.4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/** 渲染任务列表 */
+const renderTasks = (itIdx, type, list) => `
+  <ul class="tasks">
+    ${list.map((t, i) => {
+      const k = taskKey(itIdx, type, i);
+      const checked = done.has(k) ? ' checked' : '';
+      return `<li>
+        <label>
+          <input type="checkbox" data-key="${k}"${checked}/>
+          <span class="tick">${TICKSVG}</span>
+          <span class="txt">${esc(t)}</span>
+        </label>
+      </li>`;
+    }).join('')}
+  </ul>`;
+
+/** 渲染一轮迭代 */
+const renderIter = (it, i) => {
+  const total = totalOf(it);
+  const dn = doneOf(i, it);
+  const pct = total ? Math.round(dn / total * 100) : 0;
+  return `
+  <article class="iter reveal${pct === 100 ? ' done-all' : ''}" data-idx="${i}" data-done="${pct === 100 ? 1 : 0}">
+    <div class="iter-head" data-toggle>
+      <div class="iter-no">${it.no}</div>
+      <div class="iter-title">
+        <h3>${esc(it.title)}${pct === 100 ? ' <span class="chip">已完成</span>' : ''}</h3>
+        <p class="goal">${esc(it.goal)}</p>
+        <div class="iter-badges">
+          <span class="badge lv">${esc(it.level)}</span>
+          ${it.tags.map((t) => `<span class="badge">${esc(t)}</span>`).join('')}
+        </div>
+      </div>
+      <div class="iter-right">
+        <span class="iter-pct">${pct}%</span>
+        <span class="bar-mini"><i style="width:${pct}%"></i></span>
+        <span class="iter-caret">▼</span>
+      </div>
+    </div>
+    <div class="iter-body">
+      <div class="iter-inner">
+        <p class="story">${it.story}</p>
+        <div class="task-cols">
+          <div class="task-col fe">
+            <h5>前端要做 <span class="tag">Vue / TS</span></h5>
+            ${renderTasks(i, 'fe', it.fe)}
+          </div>
+          <div class="task-col be">
+            <h5>后端要做 <span class="tag">Spring Boot</span></h5>
+            ${renderTasks(i, 'be', it.be)}
+          </div>
+        </div>
+        <div class="accept">
+          <h5>✅ 验收标准（逐条对，别凭感觉）</h5>
+          <ul>${it.accept.map((a) => `<li>${esc(a)}</li>`).join('')}</ul>
+        </div>
+        <p class="hint"><b>提示：</b>${esc(it.hint)}</p>
+      </div>
+    </div>
+  </article>`;
+};
+
+const itersBox = document.getElementById('itersBox');
+const emptyBox = document.getElementById('emptyBox');
+itersBox.innerHTML = ITERATIONS.map(renderIter).join('');
+
+/* ---------- 进度统计 ---------- */
+const TOTAL_TASKS = ITERATIONS.reduce((s, it) => s + totalOf(it), 0);
+const TOTAL_DONE = () => ITERATIONS.reduce((s, it, i) => s + doneOf(i, it), 0);
+
+const RING_LEN = 2 * Math.PI * 46;
+
+function animateNum(el, to) {
+  const from = Number(el.dataset.v || 0);
+  const dur = 700;
+  const t0 = performance.now();
+  const step = (t) => {
+    const p = Math.min(1, (t - t0) / dur);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(from + (to - from) * e);
+    if (p < 1) requestAnimationFrame(step); else el.dataset.v = to;
+  };
+  requestAnimationFrame(step);
+}
+
+function refreshProgress(animate) {
+  const dn = TOTAL_DONE();
+  const pct = TOTAL_TASKS ? Math.round(dn / TOTAL_TASKS * 100) : 0;
+  const bar = document.getElementById('ringBar');
+  const label = document.getElementById('ringPct');
+  bar.style.strokeDashoffset = String(RING_LEN * (1 - pct / 100));
+  label.textContent = pct + '%';
+  const sDone = document.getElementById('statDone');
+  if (animate) animateNum(sDone, dn); else { sDone.textContent = dn; sDone.dataset.v = dn; }
+}
+
+document.getElementById('statIters').setAttribute('data-v', 0);
+animateNum(document.getElementById('statIters'), ITERATIONS.length);
+animateNum(document.getElementById('statTasks'), TOTAL_TASKS);
+refreshProgress(true);
+
+/* ---------- 勾选交互（事件委托） ---------- */
+itersBox.addEventListener('change', (e) => {
+  const cb = e.target;
+  if (!(cb instanceof HTMLInputElement) || cb.type !== 'checkbox') return;
+  const key = cb.dataset.key;
+  if (cb.checked) done.add(key); else done.delete(key);
+  save();
+  // 更新这一轮的进度
+  const card = cb.closest('.iter');
+  const idx = Number(card.dataset.idx);
+  const it = ITERATIONS[idx];
+  const pct = Math.round(doneOf(idx, it) / totalOf(it) * 100);
+  const pctEl = card.querySelector('.iter-pct');
+  const barEl = card.querySelector('.bar-mini i');
+  pctEl.textContent = pct + '%';
+  barEl.style.width = pct + '%';
+  card.classList.toggle('done-all', pct === 100);
+  card.dataset.done = pct === 100 ? '1' : '0';
+  // 标题里的「已完成」标记
+  const h3 = card.querySelector('.iter-title h3');
+  const base = esc(it.title);
+  h3.innerHTML = base + (pct === 100 ? ' <span class="chip">已完成</span>' : '');
+  refreshProgress(true);
+  applyFilter();
+});
+
+/* ---------- 展开 / 收起 ---------- */
+function toggleIter(card, force) {
+  const body = card.querySelector('.iter-body');
+  const open = force !== undefined ? force : !card.classList.contains('open');
+  card.classList.toggle('open', open);
+  body.style.maxHeight = open ? body.scrollHeight + 40 + 'px' : '0px';
+}
+itersBox.addEventListener('click', (e) => {
+  const head = e.target.closest('[data-toggle]');
+  if (!head) return;
+  toggleIter(head.closest('.iter'));
+});
+
+// 让展开的卡片在窗口尺寸变化后仍然完整显示
+window.addEventListener('resize', () => {
+  document.querySelectorAll('.iter.open .iter-body').forEach((b) => {
+    b.style.maxHeight = b.scrollHeight + 40 + 'px';
+  });
+});
+
+/* ---------- 过滤 ---------- */
+let kw = '';
+let statusMode = 'all';
+
+function applyFilter() {
+  let visible = 0;
+  document.querySelectorAll('.iter').forEach((card) => {
+    const idx = Number(card.dataset.idx);
+    const it = ITERATIONS[idx];
+    const hay = [it.no, it.title, it.goal, it.level, it.tags.join(' '), it.fe.join(' '), it.be.join(' '), it.accept.join(' ')].join(' ').toLowerCase();
+    const hitKw = !kw || hay.includes(kw.toLowerCase());
+    const pct = Math.round(doneOf(idx, it) / totalOf(it) * 100);
+    const hitStatus = statusMode === 'all' || (statusMode === 'done' ? pct === 100 : pct < 100);
+    const show = hitKw && hitStatus;
+    card.classList.toggle('hide', !show);
+    if (show) visible++;
+  });
+  emptyBox.style.display = visible ? 'none' : 'block';
+}
+
+document.getElementById('kw').addEventListener('input', (e) => { kw = e.target.value.trim(); applyFilter(); });
+document.getElementById('segStatus').addEventListener('click', (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  statusMode = b.dataset.v;
+  document.querySelectorAll('#segStatus button').forEach((x) => x.classList.toggle('on', x === b));
+  applyFilter();
+});
+document.getElementById('expandAll').addEventListener('click', () => {
+  document.querySelectorAll('.iter').forEach((c) => toggleIter(c, true));
+});
+document.getElementById('collapseAll').addEventListener('click', () => {
+  document.querySelectorAll('.iter').forEach((c) => toggleIter(c, false));
+});
+document.getElementById('reset').addEventListener('click', () => {
+  if (!confirm('确定清空所有已勾选的任务吗？此操作不可撤销。')) return;
+  done.clear(); save();
+  iterate_render_reset();
+});
+function iterate_render_reset() {
+  itersBox.innerHTML = ITERATIONS.map(renderIter).join('');
+  document.querySelectorAll('.iter').forEach((c) => observeReveal(c));
+  refreshProgress(true);
+  applyFilter();
+}
+
+/* ---------- 滚动进场 ---------- */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((en) => {
+    if (en.isIntersecting) { en.target.classList.add('in'); revealObserver.unobserve(en.target); }
+  });
+}, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+function observeReveal(el) { revealObserver.observe(el); }
+document.querySelectorAll('.reveal').forEach(observeReveal);
+
+/* ---------- 侧边目录 scroll spy ---------- */
+const secIds = ['brief', 'iters', 'api', 'db', 'dod', 'pit'];
+const tocLinks = [...document.querySelectorAll('#toc a')];
+const spy = new IntersectionObserver((entries) => {
+  entries.forEach((en) => {
+    if (!en.isIntersecting) return;
+    const id = '#' + en.target.id;
+    tocLinks.forEach((a) => a.classList.toggle('on', a.getAttribute('href') === id));
+    document.querySelectorAll('#topnav a').forEach((a) => a.classList.toggle('on', a.getAttribute('href') === id && a.closest('#topnav')));
+  });
+}, { rootMargin: '-45% 0px -50% 0px' });
+secIds.forEach((id) => { const el = document.getElementById(id); if (el) spy.observe(el); });
+
+/* ---------- 阅读进度 + 浮动按钮 ---------- */
+const readBar = document.getElementById('readProgress');
+const fabHome = document.getElementById('fabHome');
+const fabTop = document.getElementById('fabTop');
+function onScroll() {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  readBar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+  const show = window.scrollY > 320;
+  fabHome.classList.toggle('show', show);
+  fabTop.classList.toggle('show', show);
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+fabTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* ---------- 鼠标跟随光晕 ---------- */
+const glow = document.getElementById('glow');
+let gx = 0, gy = 0, cx = 0, cy = 0;
+if (window.matchMedia('(hover: hover)').matches) {
+  window.addEventListener('mousemove', (e) => { gx = e.clientX; gy = e.clientY; glow.style.opacity = '1'; });
+  (function loop() {
+    cx += (gx - cx) * 0.09;
+    cy += (gy - cy) * 0.09;
+    glow.style.transform = `translate(${cx}px, ${cy}px)`;
+    requestAnimationFrame(loop);
+  })();
+}
+
+/* ---------- 主题切换（护眼） ---------- */
+const THEME_KEY = 'study-lab:theme';
+const themeBtn = document.getElementById('themeBtn');
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t;
+  themeBtn.textContent = t === 'night' ? '☀️ 日间' : '🌙 夜间';
+  try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+}
+let savedTheme = 'light';
+try { savedTheme = localStorage.getItem(THEME_KEY) || 'light'; } catch (e) {}
+applyTheme(savedTheme);
+themeBtn.addEventListener('click', () => {
+  applyTheme(document.documentElement.dataset.theme === 'night' ? 'light' : 'night');
+});
+
+/* ---------- 平滑锚点（顶栏吸顶补偿） ---------- */
+document.querySelectorAll('a[href^="#"]').forEach((a) => {
+  a.addEventListener('click', (e) => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (!el) return;
+    e.preventDefault();
+    const y = el.getBoundingClientRect().top + window.scrollY - 68;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+    history.replaceState(null, '', '#' + id);
+  });
+});
+</script>
+</body>
+</html>

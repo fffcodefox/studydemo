@@ -32,6 +32,20 @@
           <!-- 还没点亮的方向给个小圆点提示，避免点进去发现是空的太意外 -->
           <i v-if="t.status === 'planned'" class="dot-planned" :title="'还没开始'"></i>
         </RouterLink>
+
+        <!--
+          独立静态页入口（public/ 下的 html）
+          用普通 <a> 而不是 RouterLink：它不是 SPA 路由，交给浏览器整页跳转。
+        -->
+        <a
+          v-for="l in navLinks"
+          :key="l.href"
+          :href="l.href"
+          :title="l.title"
+          class="link link-out"
+        >
+          {{ l.name }}<i class="out-mark">↗</i>
+        </a>
       </nav>
 
       <div class="tools">
@@ -45,7 +59,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { tracks } from '../data/posts'
+import { tracks, navLinks } from '../data/posts'
 
 const route = useRoute()
 const router = useRouter()
@@ -189,6 +203,29 @@ const doSearch = () => {
   border-radius: 50%;
   border: 1px solid var(--text-weak);
   opacity: 0.75;
+}
+
+/* 独立静态页入口：和站内链接区分开，加个外跳小箭头 */
+.link-out {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  border: 1px dashed var(--border-strong);
+}
+.link-out:hover {
+  border-color: var(--brand-border);
+  border-style: solid;
+}
+.out-mark {
+  font-style: normal;
+  font-size: 10px;
+  line-height: 1;
+  opacity: 0.7;
+  transition: transform 0.2s;
+}
+.link-out:hover .out-mark {
+  transform: translate(1px, -1px);
+  opacity: 1;
 }
 
 /* ---------- 右侧工具 ---------- */

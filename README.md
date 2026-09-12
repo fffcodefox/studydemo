@@ -10,6 +10,8 @@
 2. **示例集**：把 Vue 3 基础语法拆成 **22 个可运行的示例**，每个示例都是独立的 `.vue` 文件，
    带详细中文注释，可直接看运行效果并一键查看源码
 3. **接口示例页**：真的往 `studydemo-backend` 发请求，演示前后端分离下怎么调接口
+4. **业务开发训练营**（`public/business-training.html`）：独立静态页，9 轮迭代的前后端交付需求清单，
+   带任务勾选与进度、接口契约、表设计、验收标准、避坑清单，顶部导航与页脚都有入口
 
 ## 快速开始
 
@@ -32,8 +34,12 @@ node scripts/ssr-check.mjs   # 自检：把所有示例渲染一遍，验证无�
 | `/study/:id?` | `StudyView` | 示例集学习页，`:id` 可选，可直达并分享某个示例 |
 | `/backend-demo` | `ApiDemoView` | 接口示例页，调用后端 `GET /api/hello`，展示 Redis 计数与 MySQL 行数 |
 | `/api-demo` | — | 旧地址，301 到 `/backend-demo`，保留以免旧链接失效 |
+| `/business-training.html` | `public/` 静态页 | 业务开发训练营：9 轮迭代需求清单、任务勾选、接口契约、表设计、验收标准 |
 
 > 接口示例页刻意不叫 `/api-demo`：`/api` 是代理给后端的路径前缀，前端路由用同一前缀会在开发代理和 Nginx 转发时被误伤。
+
+> 业务开发训练营是 **public 下的独立 HTML**，不在 Vue Router 里，所以用普通 `<a href>` 跳转（写成 `RouterLink` 会被兜底路由重定向回首页）。
+> 好处是零依赖、可离线双击打开；构建时会原样复制到 `dist/` 根目录。入口配置在 `src/data/posts.ts` 的 `navLinks`。
 
 ### 内容怎么加
 
