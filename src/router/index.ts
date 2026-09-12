@@ -37,6 +37,13 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/ApiDemoView.vue'),
     meta: { title: '接口示例' },
   },
+  {
+    // 留给你自己写代码练手的空白页（Vue 3 语法 + 调后端）
+    path: '/practice',
+    name: 'practice',
+    component: () => import('../views/PracticeView.vue'),
+    meta: { title: '我的练习页' },
+  },
   // 旧地址兜底，避免收藏/外链失效
   { path: '/api-demo', redirect: '/backend-demo' },
   // 未知地址回首页

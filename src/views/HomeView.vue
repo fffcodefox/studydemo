@@ -30,6 +30,8 @@
             <i class="arrow">→</i>
           </RouterLink>
           <RouterLink to="/backend-demo" class="btn ghost">看看接口示例</RouterLink>
+          <!-- 留给你自己练手的空白页入口 -->
+          <RouterLink to="/practice" class="btn ghost">我的练习页</RouterLink>
         </div>
 
         <ul class="stats">
