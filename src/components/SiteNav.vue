@@ -33,6 +33,11 @@
           <i v-if="t.status === 'planned'" class="dot-planned" :title="'还没开始'"></i>
         </RouterLink>
 
+        <!-- 管理类入口：与「练习方向」用分隔线区分开 -->
+        <span class="divider" aria-hidden="true"></span>
+        <RouterLink to="/practice" class="link" :class="{ on: isPractice }">用户管理</RouterLink>
+        <RouterLink to="/articles" class="link" :class="{ on: isArticles }">文章管理</RouterLink>
+
         <!--
           独立静态页入口（public/ 下的 html）
           用普通 <a> 而不是 RouterLink：它不是 SPA 路由，交给浏览器整页跳转。
@@ -66,6 +71,10 @@ const router = useRouter()
 const keyword = ref('')
 
 const isHome = computed(() => route.path === '/')
+
+/** 管理类入口的高亮判断（/practice 为全屏页、进去后不显示导航，这里主要是防御性高亮） */
+const isPractice = computed(() => route.path.startsWith('/practice'))
+const isArticles = computed(() => route.path.startsWith('/articles'))
 
 /**
  * 当前应该高亮哪个方向：
@@ -161,6 +170,15 @@ const doSearch = () => {
 }
 .links::-webkit-scrollbar {
   display: none;
+}
+/* 学习方向与管理入口之间的分隔线 */
+.divider {
+  width: 1px;
+  height: 18px;
+  margin: 0 6px;
+  background: var(--border-strong);
+  opacity: 0.6;
+  flex: none;
 }
 .link {
   position: relative;

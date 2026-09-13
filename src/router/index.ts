@@ -38,6 +38,13 @@ const routes: RouteRecordRaw[] = [
     meta: { title: '接口示例' },
   },
   {
+    // 文章管理：占位页，功能（列表 / 编辑 / 发布）留给你实现
+    path: '/articles',
+    name: 'articles',
+    component: () => import('../views/ArticleView.vue'),
+    meta: { title: '文章管理', fullscreen: true },
+  },
+  {
     // 留给你自己写代码练手的空白页（Vue 3 语法 + 调后端）
     // fullscreen：不套用全站外壳（SiteNav + 页脚），像 public/business-training.html 一样独立呈现
     path: '/practice',

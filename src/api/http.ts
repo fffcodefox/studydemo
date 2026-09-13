@@ -80,7 +80,7 @@ export async function requestRaw<T>(path: string, init: RequestInit = {}): Promi
     throw new ApiError('响应不是合法 JSON，检查代理是否转到了正确的后端')
   }
 
-  if (payload.code !== SUCCESS_CODE) {
+  if (payload.code != SUCCESS_CODE) {
     throw new ApiError(payload.message || `业务处理失败（code=${payload.code}）`, payload.code)
   }
 

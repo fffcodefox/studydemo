@@ -298,6 +298,9 @@ const petals = Array.from({ length: 22 }, (_, id) => {
       animationDuration: 7 + Math.random() * 8 + 's',
       animationDelay: '-' + Math.random() * 10 + 's',
       '--drift': drift + 'px',
+      /* 供 prefers-reduced-motion 时静态散落使用：不飘动，但保留装饰 */
+      '--static-top': Math.random() * 100 + '%',
+      '--static-opacity': (0.35 + Math.random() * 0.35).toFixed(2),
     } as Record<string, string>,
   }
 })
@@ -721,10 +724,19 @@ onBeforeUnmount(() => {
 .glass-table :deep(th.el-table-fixed-column--right) { background: #eef8f1; }
 .glass-table :deep(.el-table__body tr.hover-row > td.el-table-fixed-column--right) { background: #e3f4e8; }
 
-/* 开了「减少动态效果」就别再飘了 */
+/*
+  开了「减少动态效果」时：
+  · 停掉所有位移动画（orb / petal / tree / panel 入场）
+  · 花瓣不直接 display:none，而是静态散落在背景上，保留装饰但不动
+*/
 @media (prefers-reduced-motion: reduce) {
   .orb, .petal, .tree-sway, .panel { animation: none !important; }
-  .petal { display: none; }
+  .petal {
+    display: block;
+    top: var(--static-top);
+    opacity: var(--static-opacity);
+    transform: none;
+  }
 }
 
 @media (max-width: 640px) {
